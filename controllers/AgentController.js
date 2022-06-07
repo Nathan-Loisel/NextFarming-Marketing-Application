@@ -87,7 +87,6 @@ exports.LoginAgent = function(req, res) {
 }
 
 exports.UpdateAgent = function(req, res) {
-    var UpdateAgent;
     Database.AgentModel.Agent.findOne({ Username: req.body.Username }, function(err, agent){
         if(err){
             res.status(400);
@@ -106,53 +105,45 @@ exports.UpdateAgent = function(req, res) {
             return;
         }
         else{
-            UpdateAgent = agent;
-        }
-    });
-
-    if(req.body.Update.FirstName != undefined){
-        UpdateAgent.FirstName = req.body.Update.FirstName;
-    }
-
-    if(req.body.Update.LastName != undefined){
-        UpdateAgent.LastName = req.body.Update.LastName;
-    }
-
-    if(req.body.Update.Username != undefined){
-        UpdateAgent.Username = req.body.Update.Username;
-    }
-
-    if(req.body.Update.Password != undefined){
-        UpdateAgent.Password = req.body.Update.Password;
-    }
-
-    if(req.body.Update.Role != undefined){
-        UpdateAgent.Role = req.body.Update.Role;
-    }
-
-    UpdateAgent.save(function(err, agent){
-        if(err){
-            res.status(400);
-            res.send({
-                success: false,
-                message: "Database error"
-            });
-            return;
-        }
-        else{
-            res.status(200);
-            res.send({
-                success: true,
-                message: {
-                    FirstName: agent.FirstName,
-                    LastName: agent.LastName,
-                    Username: agent.Username,
-                    Role: agent.Role,
-                    Created: agent.Created,
-                    Enabled: agent.Enabled
+            var UpdateAgent = agent;    
+            if(req.body.Update.FirstName != undefined){
+                UpdateAgent.FirstName = req.body.Update.FirstName;
+            }
+        
+            if(req.body.Update.LastName != undefined){
+                UpdateAgent.LastName = req.body.Update.LastName;
+            }
+        
+            if(req.body.Update.Username != undefined){
+                UpdateAgent.Username = req.body.Update.Username;
+            }
+        
+            if(req.body.Update.Password != undefined){
+                UpdateAgent.Password = req.body.Update.Password;
+            }
+        
+            if(req.body.Update.Role != undefined){
+                UpdateAgent.Role = req.body.Update.Role;
+            }
+        
+            Database.AgentModel.Agent.updateOne({ Username: req.body.Username }, UpdateAgent, function(err, agent){
+                if(err){
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Database error"
+                    });
+                    return;
                 }
-            });
-            return;
+                else{
+                    res.status(200);
+                    res.send({
+                        success: true
+                    });
+                    return;
+                }
+            }
+            );
         }
     });
 }

@@ -129,7 +129,7 @@ router.post('/logout', (req, res) => {
     return;
 });
 
-router.post('/update', [ AgentMiddleware.CheckDuplicateUsername ], (req, res) => {
+router.post('/update', [ AgentMiddleware.CheckDuplicateNewUsername ], (req, res) => {
     if(req.session == undefined || req.session.Agent == undefined){
         res.status(400);
         res.send({
@@ -175,7 +175,6 @@ router.post('/update', [ AgentMiddleware.CheckDuplicateUsername ], (req, res) =>
         });
         return;
     }
-
     AgentController.UpdateAgent(req, res);
     return;
 });
@@ -247,7 +246,7 @@ router.get('/profile', (req, res) => {
     return;
 });
 
-router.get('/get', (req, res) => {
+router.post('/get', (req, res) => {
     if(req.session == undefined || req.session.Agent == undefined){
         res.status(400);
         res.send({
@@ -279,7 +278,7 @@ router.get('/get', (req, res) => {
     return;
 });
 
-router.get('/list', (req, res) => {
+router.post('/list', (req, res) => {
     if(req.session == undefined || req.session.Agent == undefined){
         res.status(400);
         res.send({
@@ -310,7 +309,7 @@ router.get('/list', (req, res) => {
     return;
 });
 
-router.get('/changepassword', (req, res) => {
+router.post('/changepassword', (req, res) => {
     if(req.session == undefined || req.session.Agent == undefined){
         res.status(400);
         res.send({
@@ -342,7 +341,7 @@ router.get('/changepassword', (req, res) => {
     return;
 });
 
-router.get('/setpassword', (req, res) => {
+router.post('/setpassword', (req, res) => {
     if(req.session == undefined || req.session.Agent == undefined){
         res.status(400);
         res.send({
