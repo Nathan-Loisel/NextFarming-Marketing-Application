@@ -1,0 +1,190 @@
+<script src="js/dashboard/agents.js"></script>
+<div class="ui container">
+    <div class="ui  segment ">
+        <h1 class="ui header">
+            <i class="users icon"></i>
+            <div class="content">
+                Agents
+                <div class="sub header">
+                    Manage your agents
+                </div>
+            </div>
+        </h1>
+        <button class="ui green button" id="AddAgentButton">Add agent</button>
+    </div>
+    <div class="ui segment">
+        <div class="ui form">
+            <div class="fields">
+                <div class="field">
+                    <label>Search</label>
+                    <input type="text" placeholder="Search..." id="SearchBar">
+                </div>
+            </div>
+            
+            <table class="ui celled table">
+                <thead>
+                    <tr>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Username</th>
+                        <th>Creation date</th>
+                        <th>Permissions</th>
+                        <th>Manage</th>
+                    </tr>
+                </thead>
+                <tbody id="AgentsTable">
+                    <tr>
+                        <td>
+                            <div class="ui placeholder">
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>  
+</div>
+
+<div class="ui mini modal" id="AddAgentModal">
+    <i class="close icon"></i>
+    <div class="header">
+        Add agent
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="ui grid fields" style="display: flex; flex-direction: column;">
+                <div class="field">
+                    <label>First name</label>
+                    <input type="text" placeholder="First name" id="CreationFirstName">
+                </div>
+                <br>
+                <div class="field">
+                    <label>Last name</label>
+                    <input type="text" placeholder="Last name" id="CreationLastName">
+                </div>
+                <br>
+                <div class="field">
+                    <label>Username</label>
+                    <input type="text" placeholder="Username" id="CreationUsername">
+                </div>
+                <br>
+                <div class="field">
+                    <label>Password</label>
+                    <input type="password" placeholder="Password" id="CreationPassword">
+                </div>
+                <br>
+                <div class="ui segment field" style="padding-left:20px;">
+                    <label>Permissions</label>
+                    <div class="grouped fields">
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="view" id="CreationView">
+                                <label>View</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="order" id="CreationOrder">
+                                <label>Order</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="admin" id="CreationAdmin">
+                                <label>Admin</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui red deny button">
+            Cancel
+        </div>
+        <div class="ui green submit button" id="AddAgentConfirm">
+            Add
+        </div>
+    </div>
+</div>
+
+<div class="ui mini modal" id="DeleteAgentConfirmModal">
+    <i class="close icon"></i>
+    <div class="header">
+        Delete agent
+    </div>
+    <div class="content">
+        <p>Are you sure you want to delete the agent <span class="ui red text" id="DeleteAgentField"></span> ?</p>
+    </div>
+    <div class="actions">
+        <div class="ui green deny button">
+            Cancel
+        </div>  
+        <div class="ui red submit button" id="DeleteAgentConfirm">
+            Delete
+        </div>
+    </div>
+</div>
+
+
+<div class="ui mini modal" id="EditAgentModal">
+    <i class="close icon"></i>
+    <div class="header">
+        Edit agent
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="ui grid fields" style="display: flex; flex-direction: column;">
+                <div class="field">
+                    <label>First name</label>
+                    <input type="text" placeholder="First name" id="EditFirstName">
+                </div>
+                <br>
+                <div class="field">
+                    <label>Last name</label>
+                    <input type="text" placeholder="Last name" id="EditLastName">
+                </div>
+                <br>
+                <div class="field">
+                    <label>Username</label>
+                    <input type="text" placeholder="Username" id="EditUsername">
+                </div>
+                <br>
+                <div class="ui segment field" style="padding-left:20px;">
+                    <label>Permissions</label>
+                    <div class="grouped fields">
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="view" id="EditView">
+                                <label>View</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="order" id="EditOrder">
+                                <label>Order</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="admin" id="EditAdmin">
+                                <label>Admin</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui red deny button">
+            Cancel
+        </div>
+        <div class="ui green submit button" id="EditAgentConfirm">
+            Edit
+        </div>
+    </div>
+</div>

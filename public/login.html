@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Marketing login</title>
+  <link rel="stylesheet" type="text/css" href="assets/libraries/semantic/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="css/login.css">
+
+  <script src="assets/libraries/axios.min.js"></script>
+  <script src="assets/libraries/jquery.min.js"></script>
+  <script src="assets/libraries/semantic/semantic.min.js"></script>
+  <script src="js/login.js"></script>
+</head>
+<body>
+
+<div class="ui middle aligned center aligned grid">
+  <div class="column">
+    <h2 class="ui primary image header">
+      <div class="content">
+        Agent login
+      </div>
+    </h2>
+    <form class="ui large form" id="LoginForm">
+      <div class="ui stacked segment">
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="username" id="username" placeholder="Username">
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" id="password" placeholder="Password">
+          </div>
+        </div>
+        <div class="ui fluid large primary submit button">Login</div>
+      </div>
+
+      <div class="ui error message"></div>
+
+    </form>
+  </div>
+</div>
+
+</body>
+
+</html>
