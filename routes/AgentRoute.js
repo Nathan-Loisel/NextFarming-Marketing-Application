@@ -15,7 +15,7 @@ router.post('/create', [ AgentMiddleware.CheckDuplicateUsername ], (req, res) =>
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,
@@ -139,7 +139,7 @@ router.post('/update', [ AgentMiddleware.CheckDuplicateUsername ], (req, res) =>
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,
@@ -190,7 +190,7 @@ router.post('/delete', (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,
@@ -257,7 +257,7 @@ router.get('/get', (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,
@@ -289,7 +289,7 @@ router.get('/list', (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,
@@ -352,7 +352,7 @@ router.get('/setpassword', (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,

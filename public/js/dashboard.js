@@ -3,7 +3,6 @@ const api = axios.create({baseURL: 'http://localhost'})
 
 $(document)
 .ready(function() {
-  //get location url parameter
   var url = new URL(window.location.href);
   var location = url.searchParams.get("location");
   var validLocations = ['orders', 'agents', 'products', 'administration'];
@@ -11,12 +10,7 @@ $(document)
     window.history.replaceState({}, '', '/dashboard?location=orders');
   }
 
-  if(location == 'orders'){
-    LoadContent('orders');
-  }
-  else if(location == 'agents'){
-    LoadContent('agents');
-  }
+  LoadContent(location);
 
   $('#OrdersButton').click(function(){
     window.history.replaceState({}, '', '/dashboard?location=orders');
@@ -43,7 +37,40 @@ $(document)
     $('#LogoutButton').addClass('loading');
     Logout();
   });
-  ;
+
+
+  //get request to /agent/get to get the agent's information
+  api.get('/agent/profile')
+  .then(res => {
+    res.data.message.Role = "Admin";
+
+    //div TopBarProfile
+    // <i class="user icon"></i>
+    // <div class="content">firstname lastname
+    //   <div class="sub header">
+    //     role
+    //   </div>
+    // </div>
+
+    $('#TopBarProfile').html(`
+      <div class="content"><h4>${res.data.message.FirstName} ${res.data.message.LastName}</h4>
+      </div>
+    `);
+
+
+    //$('#HeaderName').text(res.data.message.FirstName + ' ' + res.data.message.LastName);
+    //$('#HeaderRole').text(res.data.message.Role);
+  }
+  )
+  .catch(error => {
+    if(error.response.data != null){
+      ShowNotif(error.response.data.message, 'red');
+    }
+    else{
+      ShowNotif("Server Error", 'red');
+    }
+  }
+  );
 })
 ;
 
@@ -71,15 +98,23 @@ function Logout(){
 function LoadContent(location){
   if(location == 'orders'){
     $('#content').load('/content/dashboard/orders');
+    SetActiveTab('OrdersButton');
   }
   else if(location == 'agents'){
     $('#content').load('/content/dashboard/agents');
+    SetActiveTab('AgentsButton');
   }
   else if(location == 'products'){
     $('#content').load('/content/dashboard/products');
+    SetActiveTab('ProductsButton');
   }
   else if(location == 'administration'){
     $('#content').load('/content/dashboard/administration');
+    SetActiveTab('AdministrationButton');
+  }
+  else{
+    $('#content').load('/content/dashboard/orders');
+    SetActiveTab('OrdersButton');
   }
 }
 
@@ -91,4 +126,12 @@ function ShowNotif(message, color){
       showProgress: 'bottom'
     })
   ;
+}
+
+function SetActiveTab(tab){
+  $('#OrdersButton').removeClass('active');
+  $('#AgentsButton').removeClass('active');
+  $('#ProductsButton').removeClass('active');
+  $('#AdministrationButton').removeClass('active');
+  $('#' + tab).addClass('active');
 }

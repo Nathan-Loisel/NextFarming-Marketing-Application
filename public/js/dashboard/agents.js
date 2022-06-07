@@ -1,27 +1,31 @@
-
-
 Agents = [];
 DeletingAgent = null;
 EditingAgent = null;
 
+
+const Roles = ['GUEST', 'OPERATOR', 'ADMIN'];
 $(document)
 .ready(function() {
     RefreshAgentsTable();
 
-    $('.ui.dropdown')
-    .dropdown();
+
+
+    //AddAgentPermissionsDropdown is a dropdown.
+    //Set preselected to GUEST
+    $('#CreationPermissions').dropdown('set selected', 'GUEST');
 
     $('#AddAgentConfirm').click(function(e){
+        Role = 0;
+        console.log($('#CreationPermissions').dropdown('get value'));
+        if($('#CreationPermissions').dropdown('get value') == 'GUEST') Role = 0;
+        if($('#CreationPermissions').dropdown('get value') == 'OPERATOR') Role = 1;
+        if($('#CreationPermissions').dropdown('get value') == 'ADMIN') Role = 2;
         var Agent = {
             FirstName: $('#CreationFirstName').val(),
             LastName: $('#CreationLastName').val(),
             Username: $('#CreationUsername').val(),
             Password: $('#CreationPassword').val(),
-            Permissions: {
-                View: $('#CreationView').is(':checked'),
-                Order: $('#CreationOrder').is(':checked'),
-                Admin: $('#CreationAdmin').is(':checked')
-            }
+            Role: Role
         }
         CreateAgent(Agent);
     }
@@ -63,44 +67,17 @@ function RefreshAgentsTable(){
         }
     }
     );
-
-    
 }
 
 
 function AddInAgentsTable(Agent){
-    ViewNode = '<input type="checkbox" name="viewOrder"';
-    if(Agent.Permissions.View) ViewNode += ' checked="checked"';
-    ViewNode += '>';
-
-    OrderNode = '<input type="checkbox" name="orderOrder"';
-    if(Agent.Permissions.Order) OrderNode += ' checked="checked"';
-    OrderNode += '>';
-
-    AdminNode = '<input type="checkbox" name="adminOrder"';
-    if(Agent.Permissions.Admin) AdminNode += ' checked="checked"';
-    AdminNode += '>';
-
     $('#AgentsTable').append(
         '<tr>' +
         '<td>' + Agent.FirstName + '</td>' +
         '<td>' + Agent.LastName + '</td>' +
         '<td>' + Agent.Username + '</td>' +
         '<td>' + Agent.Username + '</td>' +
-        '<td class="ui center aligned" style="width: 120px;">' +
-        '<div class="ui read-only checkbox">' +
-        ViewNode +
-        '<label></label>' +
-        '</div>' +
-        '<div class="ui read-only checkbox">' +
-        OrderNode +
-        '<label></label>' +
-        '</div>' +
-        '<div class="ui read-only checkbox">' +
-        AdminNode +
-        '<label></label>' +
-        '</div>' +
-        '</td>' +
+        '<td>' + Roles[Agent.Role] + '</td>' +
         '<td>' +
         '<button class="ui green button" onclick="EditAgentModal(\'' + Agent.Username + '\')" >Edit</button>' +
         '<button class="ui red button" onclick="DeleteAgentModal(\'' + Agent.Username + '\')">Delete</button>' +
@@ -147,7 +124,7 @@ function DeleteAgentModal(Username){
 }
 
 function EditAgent(Username){
-
+    
 }
 
 function DeleteAgent(Username){

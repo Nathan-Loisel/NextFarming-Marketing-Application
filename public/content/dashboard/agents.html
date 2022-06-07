@@ -28,7 +28,7 @@
                         <th>Last name</th>
                         <th>Username</th>
                         <th>Creation date</th>
-                        <th>Permissions</th>
+                        <th>Role</th>
                         <th>Manage</th>
                     </tr>
                 </thead>
@@ -75,29 +75,20 @@
                     <input type="password" placeholder="Password" id="CreationPassword">
                 </div>
                 <br>
-                <div class="ui segment field" style="padding-left:20px;">
+                <div class="field">
                     <label>Permissions</label>
-                    <div class="grouped fields">
-                        <div class="field">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="view" id="CreationView">
-                                <label>View</label>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="order" id="CreationOrder">
-                                <label>Order</label>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="admin" id="CreationAdmin">
-                                <label>Admin</label>
-                            </div>
+                    <div class="ui fluid selection dropdown" id="CreationPermissions">
+                        <input type="hidden" name="permissions">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Permissions</div>
+                        <div class="menu">
+                            <div class="item" data-value="GUEST">GUEST</div>
+                            <div class="item" data-value="OPERATOR">OPERATOR</div>
+                            <div class="item" data-value="ADMIN">ADMIN</div>
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -130,61 +121,85 @@
 </div>
 
 
-<div class="ui mini modal" id="EditAgentModal">
+
+<div class="ui modal" id="EditAgentModal">
     <i class="close icon"></i>
     <div class="header">
         Edit agent
     </div>
     <div class="content">
-        <div class="ui form">
-            <div class="ui grid fields" style="display: flex; flex-direction: column;">
-                <div class="field">
-                    <label>First name</label>
-                    <input type="text" placeholder="First name" id="EditFirstName">
+        <div id="EditAgentTitle">
+            <div class="ui placeholder">
+                <div class="header">
+                  <div class="line"></div>
                 </div>
-                <br>
-                <div class="field">
-                    <label>Last name</label>
-                    <input type="text" placeholder="Last name" id="EditLastName">
-                </div>
-                <br>
-                <div class="field">
-                    <label>Username</label>
-                    <input type="text" placeholder="Username" id="EditUsername">
-                </div>
-                <br>
-                <div class="ui segment field" style="padding-left:20px;">
-                    <label>Permissions</label>
-                    <div class="grouped fields">
-                        <div class="field">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="view" id="EditView">
-                                <label>View</label>
-                            </div>
+            </div>
+            <!-- <h2>Nathan Loisel</h2> -->
+        </div>
+        <div class="ui raised segment">
+            <div class="ui grid">
+                <div class="equal width row" style="display:flex;justify-content: space-around;">
+                    <div class="column" style="display:flex;justify-content: center;">
+                        <div class="ui action input">
+                            <input readonly="" type="text" placeholder="Loading">
+                            <button class="ui icon button">
+                            <i class="edit icon"></i>
+                            </button>
                         </div>
-                        <div class="field">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="order" id="EditOrder">
-                                <label>Order</label>
-                            </div>
+                    </div>
+                    <div class="column"  style="display:flex;justify-content: center;">
+                        <div class="ui action input">
+                            <input readonly="" type="text" placeholder="Loading">
+                            <button class="ui icon button">
+                            <i class="edit icon"></i>
+                            </button>
                         </div>
-                        <div class="field">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="admin" id="EditAdmin">
-                                <label>Admin</label>
+                    </div>
+                    <div class="column"  style="display:flex;justify-content: center;">
+                        <div class="ui action input">
+                            <input readonly="" type="text" placeholder="Loading">
+                            <button class="ui icon button">
+                            <i class="edit icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="equal width row" style="display:flex;justify-content: space-around;">
+                    <div class="column" style="display:flex;justify-content: center;">
+                        <div class="column" style="display:flex;justify-content: center;">
+                            <div class="ui action input">
+                                <input readonly="" type="text" placeholder="Loading">
+                                <button class="ui icon button">
+                                <i class="edit icon"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
+
+                    <div class="column" style="display:flex;justify-content: center;">
+                        <div class="ui left icon input">
+                            <input type="text" readonly="" placeholder="Loading">
+                            <i class="clock icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="column" style="display:flex;justify-content: center;">
+                        <button class="ui extralarge green button" id="ChangePasswordButton">Change password</button>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+
+        <!-- Close button -->
     <div class="actions">
         <div class="ui red deny button">
-            Cancel
+           Close
         </div>
-        <div class="ui green submit button" id="EditAgentConfirm">
-            Edit
-        </div>
-    </div>
-</div>
+     </div>
+
+
+
+

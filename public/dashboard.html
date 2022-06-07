@@ -16,7 +16,7 @@
 </head>
 <body>
 
-  <div class="ui left menu">
+  <div class="ui left secondary pointing menu">
     <div class="ui container">
       <a class="ui item" id="OrdersButton">
         <h4>Orders</h2>
@@ -31,15 +31,13 @@
       <h4>Administration</h4>
       </a>
       <div class="right menu">
-        <div class="ui item">
-          <div class="ui header">
-            <i class="user icon"></i>
-            <div class="content">
-              Nathan Loisel
-              <div class="sub header">Administrator</div>
+        <a class="ui item">
+          <div id="TopBarProfile">
+            <div class="ui placeholder" style="width: 150px;">
+              <div class="full line"></div>
             </div>
           </div>
-        </div>
+        </a>
         <div class="ui item">
           <button class="ui green button" id="LogoutButton">Logout</button>
         </div>
@@ -47,7 +45,6 @@
     </div>
   </div>
   <div id="content" class="ui container"></div>
-
 
 </body>
 

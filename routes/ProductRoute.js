@@ -32,7 +32,7 @@ router.post('/create',  (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,
@@ -82,7 +82,7 @@ router.post('/update',  (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,
@@ -123,7 +123,7 @@ router.post('/delete',  (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,
@@ -164,7 +164,7 @@ router.post('/options/add', (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,
@@ -223,7 +223,7 @@ router.post('/options/delete', (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,
@@ -264,7 +264,7 @@ router.post('/options/update', (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 2){
+    if(req.session.Agent.Role < 2){
         res.status(400);
         res.send({
             success: false,

@@ -41,7 +41,7 @@ router.post('/create', [OrderMiddleWare.CheckProductID],  (req, res) => {
             return;
         }
     
-        if(req.session.Agent.Role >= 1){
+        if(req.session.Agent.Role < 1){
             res.status(400);
             res.send({
                 success: false,
@@ -108,7 +108,7 @@ router.post('/update', [OrderMiddleWare.CheckProductID], (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 1){
+    if(req.session.Agent.Role < 1){
         res.status(400);
         res.send({
             success: false,
@@ -148,7 +148,7 @@ router.post('/delete',  (req, res) => {
         return;
     }
 
-    if(req.session.Agent.Role >= 1){
+    if(req.session.Agent.Role < 1){
         res.status(400);
         res.send({
             success: false,
