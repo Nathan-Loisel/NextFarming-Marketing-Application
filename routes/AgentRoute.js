@@ -230,7 +230,6 @@ router.get('/profile', (req, res) => {
         });
         return;
     }
-
     res.status(200);
     res.send({
         success: true,

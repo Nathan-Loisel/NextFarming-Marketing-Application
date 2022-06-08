@@ -66,7 +66,6 @@ exports.LoginAgent = function(req, res) {
                 return;
             }
             else{
-
                 req.session.Agent = agent;
                 res.status(200);
                 res.send({

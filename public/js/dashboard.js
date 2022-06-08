@@ -12,6 +12,11 @@ $(document)
 
   LoadContent(location);
 
+  $('#UserDropdown').dropdown({
+    on: 'hover',
+    action: 'nothing'
+  });
+
   $('#OrdersButton').click(function(){
     window.history.replaceState({}, '', '/dashboard?location=orders');
     LoadContent('orders');
@@ -38,12 +43,15 @@ $(document)
     Logout();
   });
 
+  $('#DropdownLogoutButton').click(function(){
+    $('#DropdownLogoutButton').addClass('loading');
+    Logout();
+  });
+
 
   //get request to /agent/get to get the agent's information
   api.get('/agent/profile')
   .then(res => {
-    res.data.message.Role = "Admin";
-
     //div TopBarProfile
     // <i class="user icon"></i>
     // <div class="content">firstname lastname
@@ -52,14 +60,18 @@ $(document)
     //   </div>
     // </div>
 
-    $('#TopBarProfile').html(`
-      <div class="content"><h4>${res.data.message.FirstName} ${res.data.message.LastName}</h4>
-      </div>
+    $('#TopBarName').html(`
+      <h4>${res.data.message.FirstName} ${res.data.message.LastName}</h4>
     `);
 
 
-    //$('#HeaderName').text(res.data.message.FirstName + ' ' + res.data.message.LastName);
-    //$('#HeaderRole').text(res.data.message.Role);
+    Role = "GUEST";
+    if(res.data.message.Role == 0) Role = "Guest"; 
+    if(res.data.message.Role == 1) Role = "OPERATOR";
+    if(res.data.message.Role == 2) Role = "Administrator";
+    $('#DropdownName').html(`
+      <h4>${res.data.message.Username}</h4> ${Role}
+    `);
   }
   )
   .catch(error => {
@@ -78,10 +90,12 @@ function Logout(){
   api.post('/agent/logout')
   .then(res => {
         $('#LogoutButton').removeClass('loading');
+        $('#DropdownLogoutButton').removeClass('loading');
         ShowNotif("Logout Successful", 'green');
   })
   .catch(error => {
         $('#LogoutButton').removeClass('loading');
+        $('#DropdownLogoutButton').removeClass('loading');
         if(error.response.data != null){
             ShowNotif(error.response.data.message, 'red');
         }

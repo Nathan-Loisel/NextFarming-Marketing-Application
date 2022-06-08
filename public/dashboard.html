@@ -33,8 +33,40 @@
       <div class="right menu">
         <a class="ui item">
           <div id="TopBarProfile">
-            <div class="ui placeholder" style="width: 150px;">
-              <div class="full line"></div>
+            <!-- Text showing 'Nathan Loisel'
+            On mouse click, open dropdown that has 'Administrator' header and buttons with icons to See profile and go to Settings -->
+            <div class="ui dropdown" id="UserDropdown">
+              <div class="text" id="TopBarName">
+                <div class="ui placeholder" style="width: 150px;">
+                  <div class="full line"></div>
+                </div>
+                
+                
+                <!-- <h4>Nathan Loisel</h4> -->
+              </div>
+              <i class="dropdown icon"></i>
+              <div class="menu" style="margin-top: 10px;">
+                <div class="header" id="DropdownName">
+
+                  <div class="ui placeholder" style="width: 150px;">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                  </div>
+                  
+                </div>
+                <div class="header">
+                  <button class="ui labeled primary icon button">
+                    <i class="settings icon"></i>
+                      Settings
+                  </button>
+                  <button class="ui labeled primary icon button" id="DropdownLogoutButton">
+                    <i class="sign out icon"></i>
+                      Logout
+                  </button>
+                </div>
+                <div class="item">
+                </div>
+              </div>
             </div>
           </div>
         </a>
