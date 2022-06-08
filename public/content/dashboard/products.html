@@ -1,1 +1,117 @@
-<p>Products</p>
+<script src="js/dashboard/products.js"></script>
+
+
+
+
+
+<div class="ui container">
+    <div class="ui  segment ">
+        <h1 class="ui header">
+            <i class="users icon"></i>
+            <div class="content">
+                Products
+                <div class="sub header">
+                    Manage your products
+                </div>
+            </div>
+        </h1>
+        <button class="ui green button" id="AddProductButton">Add Product</button>
+    </div>
+    <div class="ui segment">
+        <div class="ui form">
+            <div class="fields">
+                <div class="field">
+                    <label>Search</label>
+                    <input type="text" placeholder="Search..." id="SearchBar">
+                </div>
+            </div>
+            
+            <table class="ui celled table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="AgentsTable">
+                    <tr>
+                        <td>Product Title</td>
+                        <td>Product Description</td>
+                        <td>Product Image</td>
+                        <td class="collapsing" style="padding: 5px;">
+                            <button style="padding: 7px; font-size: 14px;" class="ui mini green button" id="ManageButton" >Manage</button>
+                            <button style="padding: 7px; font-size: 14px;" class="ui mini red button">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>  
+</div>
+
+<div class="ui right vertical sidebar menu" id="ManageProductSidebar" style="width: 800px;">
+    <br>
+    <div class="ui center aligned container">
+        <h1 class="ui header">
+            <div class="content">
+                Product title
+            </div>
+        </h1>
+    </div>
+    <div class="ui raised segment" style="margin: 20px;">
+        <div class="ui form">
+            <div class="fields">
+                <div class="field">
+                    <label>Name</label>
+                    <input type="text" readonly="" value="Product Title">
+                </div>
+                <div class="field">
+                    <label>Description</label>
+                    <input type="text" readonly="" value="Short description" id="ProductDescription">
+                </div>
+                <div class="field">
+                    <label>Created</label>
+                    <input type="text" readonly="" value="Creation date" id="ProductCreationDate">
+                </div>
+            </div>
+        </div>
+        <button class="ui green button" id="EditProductButton" style="padding-right: 40px;padding-left: 40px;">Edit</button>
+        <button class="ui red button" id="DeleteProductButton" style="padding-right: 40px;padding-left: 40px;">Delete</button>
+    </div>
+    <div class="ui raised segment" style="margin: 20px;">
+        <h1 class="ui header">
+            <i class="box icon"></i>
+            <div class="content">
+                Product options
+                <div class="sub header">
+                    Add options to your product
+                </div>
+            </div>
+        </h1>
+        <button class="ui green button">Add Option</button>
+        <div class="ui divider"></div>
+        <table class="ui celled table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="AgentsTable">
+                <tr>
+                    <td>Option Title</td>
+                    <td>Option Short Description</td>
+                    <td>Option Image</td>
+                    <td class="collapsing" style="padding: 5px;">
+                        <button style="padding: 7px; font-size: 14px;" class="ui mini green button" >Edit</button>
+                        <button style="padding: 7px; font-size: 14px;" class="ui mini red button">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

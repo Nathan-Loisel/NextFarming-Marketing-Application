@@ -130,9 +130,9 @@ function AddInAgentsTable(Agent){
         '<td>' + Agent.Username + '</td>' +
         '<td>' + FormatDate(Agent.Created) + '</td>' +
         '<td>' + Roles[Agent.Role] + '</td>' +
-        '<td>' +
-        '<button class="ui green button" onclick="OpenManageAgentModal(\'' + Agent.Username + '\')" >Manage</button>' +
-        '<button class="ui red button" onclick="OpenDeleteAgentModal(\'' + Agent.Username + '\')">Delete</button>' +
+        '<td class="collapsing" style="padding: 5px;">' +
+        '<button style="padding: 7px; font-size: 14px;" class="ui mini green button" onclick="OpenManageAgentModal(\'' + Agent.Username + '\')" >Manage</button>' +
+        '<button style="padding: 7px; font-size: 14px;" class="ui mini red button" onclick="OpenDeleteAgentModal(\'' + Agent.Username + '\')">Delete</button>' +
         '</td>' +
         '</tr>'
     );
