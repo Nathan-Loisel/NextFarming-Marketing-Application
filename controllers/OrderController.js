@@ -1,31 +1,6 @@
 var Database = require('../Database');
 var uuid = require('uuid');
 
-    //ID: uuidv4
-    //Client:
-    //    FirstName: String
-    //    LastName: String
-    //    Email: String
-    //    Phone: String
-    //    Address: String
-    //    City: String
-    //    State: String
-    //    Zip: String
-    //    Country: String
-    //Agent: string
-    //Products: [{
-        //ProductID: uuidv4
-        //Options: [{
-            //OptionID: uuidv4
-            //Quantity: Number
-        //}]
-        //Quantity: Number
-    //}]
-    //Price: Number
-    //CreationDate: Date
-    //Status: String (pending, confirmed, cancelled, archived)
-
-
 exports.CreateOrder = (req, res) => {
     var Order = {
         ID: uuid.v4(),
@@ -43,8 +18,10 @@ exports.CreateOrder = (req, res) => {
         Agent: req.session.Agent.Username,
         Products: req.body.Products,
         Price: req.body.Price,
-        CreationDate: Date.now(),
-        Status: "pending"
+        Status: OrderStatus.PENDING,
+        Dates: {
+            0: Date.now()
+        }
     };
 
     if(req.body.Client.Email != undefined){
@@ -162,8 +139,23 @@ exports.UpdateOrder = (req, res) => {
         }
 
         if (req.body.Status != undefined) {
-            if(req.body.Status == "pending" || req.body.Status == "confirmed" || req.body.Status == "cancelled" || req.body.Status == "archived"){
+            if(req.body.Status == 0 || req.body.Status == 1 || req.body.Status == 2 || req.body.Status == 3){
                 order.Status = req.body.Status;
+                if(req.body.status == 0){
+                    order.Dates[0] = Date.now();
+                }
+
+                if(req.body.status == 1){
+                    order.Dates[1] = Date.now();
+                }
+
+                if(req.body.status == 2){
+                    order.Dates[2] = Date.now();
+                }
+
+                if(req.body.status == 3){
+                    order.Dates[3] = Date.now();
+                }
             }
         }
 
@@ -249,8 +241,9 @@ exports.ConfirmOrder = (req, res) => {
             return;
         }
 
-        if(order.Status == "pending"){
-            order.Status = "confirmed";
+        if(order.Status == 0){
+            order.Status = 1;
+            order.Dates[1] = Date.now();
         }
         else{
             res.status(400);

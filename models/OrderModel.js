@@ -21,9 +21,11 @@ const OrderSchema = new Mongoose.Schema({
         Quantity: Number
     }],
     Price: Number,
-    CreatedDate: String,
-    Completed: Boolean,
-    CompletedDate: String
+    Status: String,
+    Dates: {
+        Created: Date,
+        Updated: Date
+    }
 }, { collection: 'Orders' });
 
 

@@ -4,32 +4,6 @@ var express = require('express');
 
 const router = express.Router();
 
-    //Body:
-    //ID: uuidv4
-    //Client:
-    //    FirstName: String
-    //    LastName: String
-    //    Email: String
-    //    Phone: String
-    //    Address: String
-    //    City: String
-    //    State: String
-    //    Zip: String
-    //    Country: String
-    //Agent: string
-    //Products: [{
-        //ProductID: uuidv4
-        //Options: [{
-            //OptionID: uuidv4
-            //Quantity: Number
-        //}]
-        //Quantity: Number
-    //}]
-    //Price: Number
-    //CreationDate: Date
-    //Status: String (pending, confirmed, cancelled, archived)
-
-
 router.post('/create', [OrderMiddleWare.CheckProductID],  (req, res) => {
         
         if(req.session == undefined || req.session.Agent == undefined){

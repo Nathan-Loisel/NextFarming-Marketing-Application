@@ -18,6 +18,13 @@ const Roles = {
     ADMIN: 2
 };
 
+const OrderStatus = {
+    PENDING: 0,
+    CONFIRMED: 1,
+    ARCHIVED: 2,
+    CANCELED: 3
+};
+
 
 var AgentRoutes = require('./routes/AgentRoute');
 var OrderRoutes = require('./routes/OrderRoute');
