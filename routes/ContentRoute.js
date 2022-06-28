@@ -61,4 +61,17 @@ router.get('/content/dashboard/administration', (req, res) => {
 }
 );
 
+router.get('/content/dashboard/settings', (req, res) => {
+    if(req.session == undefined || req.session.Agent == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You are not logged in"
+        });
+        return;
+    }
+    ContentController.GetSettings(req, res);
+}
+);
+
 module.exports = router;

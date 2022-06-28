@@ -1,1 +1,124 @@
-<p>Salut a tous, ca fonctionne !</p>
+<script src="js/dashboard/orders.js"></script>
+
+
+
+<div class="ui container">
+    <div class="ui  segment ">
+        <h1 class="ui header">
+            <i class="users icon"></i>
+            <div class="content">
+                Order
+                <div class="sub header">
+                    Manage your orders
+                </div>
+            </div>
+        </h1>
+        <button class="ui green button" id="NewOrderButton">New order</button>
+    </div>
+    <div class="ui segment">
+
+        <!-- Tab initialisation -->
+        <div class="ui top attached tabular menu">
+            <a class="active item" data-tab="completed">
+                <i class="check icon"></i>
+                Completed
+            </a>
+            <a class="item" data-tab="pending">
+                <i class="clock icon"></i>
+                Pending
+
+            </a>
+            <a class="item" data-tab="archived">
+                <i class="folder icon"></i>
+                Archived
+            </a>
+        </div>
+
+
+        <!-- Completed orders -->
+        <div class="ui bottom attached tab segment active" data-tab="completed">
+            <div class="ui form">
+                <table class="ui celled table">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Mail</th>
+                            <th>Creation date</th>
+                            <th>Products</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="CompletedOrdersTable">
+                        <tr>
+                            <td>
+                                <div class="ui placeholder">
+                                    <div class="line"></div>
+                                    <div class="line"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+          
+        <!-- Pending orders -->
+        <div class="ui bottom attached tab segment" data-tab="pending">
+            <div class="ui form">
+                <table class="ui celled table">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Mail</th>
+                            <th>Creation date</th>
+                            <th>Products</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="PendingOrdersTable">
+                        <tr>
+                            <td>
+                                <div class="ui placeholder">
+                                    <div class="line"></div>
+                                    <div class="line"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+          
+        <!-- Archived orders -->
+        <div class="ui bottom attached tab segment" data-tab="archived">
+            <div class="ui form">
+                <table class="ui celled table">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Mail</th>
+                            <th>Creation date</th>
+                            <th>Products</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="ArchivedOrdersTable">
+                        <tr>
+                            <td>
+                                <div class="ui placeholder">
+                                    <div class="line"></div>
+                                    <div class="line"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>  
+</div>
