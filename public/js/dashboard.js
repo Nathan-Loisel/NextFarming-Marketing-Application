@@ -5,7 +5,7 @@ $(document)
 .ready(function() {
   var url = new URL(window.location.href);
   var location = url.searchParams.get("location");
-  var validLocations = ['orders', 'agents', 'products', 'administration'];
+  var validLocations = ['orders', 'agents', 'products', 'administration', 'settings'];
   if(validLocations.indexOf(location) == -1){
     window.history.replaceState({}, '', '/dashboard?location=orders');
   }
@@ -41,6 +41,11 @@ $(document)
   $('#LogoutButton').click(function(){
     $('#LogoutButton').addClass('loading');
     Logout();
+  });
+
+  $('#DropdownSettingsButton').click(function(){
+    window.history.replaceState({}, '', '/dashboard?location=settings');
+    LoadContent('settings');
   });
 
   $('#DropdownLogoutButton').click(function(){
@@ -126,6 +131,10 @@ function LoadContent(location){
     $('#content').load('/content/dashboard/administration');
     SetActiveTab('AdministrationButton');
   }
+  else if(location == 'settings'){
+    $('#content').load('/content/dashboard/settings');
+    SetActiveTab(null);
+  }
   else{
     $('#content').load('/content/dashboard/orders');
     SetActiveTab('OrdersButton');
@@ -147,5 +156,7 @@ function SetActiveTab(tab){
   $('#AgentsButton').removeClass('active');
   $('#ProductsButton').removeClass('active');
   $('#AdministrationButton').removeClass('active');
-  $('#' + tab).addClass('active');
+  if(tab != null){
+     $('#' + tab).addClass('active');
+  }
 }

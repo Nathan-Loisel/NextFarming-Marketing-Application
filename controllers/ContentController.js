@@ -25,3 +25,7 @@ exports.GetDashboardProducts = function(req, res){
 exports.GetDashboardAdministration = function(req, res){
     res.sendFile(path.join(__dirname + '/../public/content/dashboard/administration.html'));
 }
+
+exports.GetSettings = function(req, res){
+    res.sendFile(path.join(__dirname + '/../public/content/dashboard/settings.html'));
+}
