@@ -5,7 +5,7 @@ $(document)
 .ready(function() {
   var url = new URL(window.location.href);
   var location = url.searchParams.get("location");
-  var validLocations = ['orders', 'agents', 'products', 'administration'];
+  var validLocations = ['orders', 'agents', 'products'];
   if(validLocations.indexOf(location) == -1){
     window.history.replaceState({}, '', '/dashboard?location=orders');
   }
@@ -30,11 +30,6 @@ $(document)
   $('#ProductsButton').click(function(){
     window.history.replaceState({}, '', '/dashboard?location=products');
     LoadContent('products');
-  }
-  );
-  $('#AdministrationButton').click(function(){
-    window.history.replaceState({}, '', '/dashboard?location=administration');
-    LoadContent('administration');
   }
   );
 
@@ -65,7 +60,7 @@ $(document)
     `);
 
 
-    Role = "GUEST";
+    Role = "Guest";
     if(res.data.message.Role == 0) Role = "Guest"; 
     if(res.data.message.Role == 1) Role = "OPERATOR";
     if(res.data.message.Role == 2) Role = "Administrator";
@@ -122,10 +117,6 @@ function LoadContent(location){
     $('#content').load('/content/dashboard/products');
     SetActiveTab('ProductsButton');
   }
-  else if(location == 'administration'){
-    $('#content').load('/content/dashboard/administration');
-    SetActiveTab('AdministrationButton');
-  }
   else{
     $('#content').load('/content/dashboard/orders');
     SetActiveTab('OrdersButton');
@@ -146,6 +137,5 @@ function SetActiveTab(tab){
   $('#OrdersButton').removeClass('active');
   $('#AgentsButton').removeClass('active');
   $('#ProductsButton').removeClass('active');
-  $('#AdministrationButton').removeClass('active');
   $('#' + tab).addClass('active');
 }

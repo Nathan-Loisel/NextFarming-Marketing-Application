@@ -2,7 +2,7 @@ Agents = [];
 var CurrentUsername = null;
 var CurrentAgent = null;
 
-const Roles = ['GUEST', 'OPERATOR', 'ADMIN'];
+const Roles = ['Guest', 'Operator', 'Administrator'];
 $(document)
 .ready(function() {
     RefreshAgentsTable();
@@ -25,7 +25,6 @@ $(document)
             Password: $('#AddAgentPasswordField').val(),
             Role: Role
         }
-        console.log(Agent);
         AddAgent(Agent);
     }
     );
@@ -139,11 +138,10 @@ function AddInAgentsTable(Agent){
 }
 
 function AddAgent(Agent){
-    $('#AddAgentButton').addClass('loading');
+    $('#AddAgentConfirmButton').addClass('loading');
     api.post('/agent/create', Agent)
     .then(res => {
         RefreshAgentsTable();
-        $('#AddAgentModal').modal('hide');
         ShowNotif("Agent successfully created", 'green');
     }
     )
@@ -160,7 +158,7 @@ function AddAgent(Agent){
     }
     ).then(() => {
         $('#AddAgentModal').modal('hide');
-        $('#AddAgentButton').removeClass('loading');
+        $('#AddAgentConfirmButton').removeClass('loading');
     }
     );
 }
@@ -271,9 +269,9 @@ function DeleteAgent(Username){
 
 function EditAgent(){
     Role = 0;
-    if($('#EditAgentRoleField').dropdown('get value') == 'GUEST' ) Role = 0;
-    else if($('#EditAgentRoleField').dropdown('get value') == 'OPERATOR') Role = 1;
-    else if($('#EditAgentRoleField').dropdown('get value') == 'ADMIN') Role = 2;
+    if($('#EditAgentRoleField').dropdown('get value') == 'Guest' ) Role = 0;
+    else if($('#EditAgentRoleField').dropdown('get value') == 'Operator') Role = 1;
+    else if($('#EditAgentRoleField').dropdown('get value') == 'Administrator') Role = 2;
 
     if($('#EditAgentUsernameField').val() == CurrentAgent.Username){
         data = {

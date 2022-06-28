@@ -50,7 +50,7 @@ router.post('/create',  (req, res) => {
         return;
     }
 
-    if(req.body.Title == undefined) {
+    if(req.body.Title == undefined || req.body.Title == "") {
         res.status(400);
         res.send({
             success: false,
@@ -59,7 +59,7 @@ router.post('/create',  (req, res) => {
         return;
     }
 
-    if(req.body.Price == undefined) {
+    if(req.body.Price == undefined || req.body.Price == "") {
         res.status(400);
         res.send({
             success: false,
@@ -295,7 +295,7 @@ router.post('/options/update', (req, res) => {
     return;
 });
 
-router.get('/get', (req, res) => {
+router.post('/get', (req, res) => {
     if(req.session == undefined || req.session.Agent == undefined){
         res.status(400);
         res.send({
@@ -327,7 +327,7 @@ router.get('/get', (req, res) => {
     return;
 });
 
-router.get('/list', (req, res) => {
+router.post('/list', (req, res) => {
     if(req.session == undefined || req.session.Agent == undefined){
         res.status(400);
         res.send({
@@ -346,11 +346,11 @@ router.get('/list', (req, res) => {
         return;
     }
 
-    ProductController.GetProducts(req, res);
+    ProductController.ListProducts(req, res);
     return;
 });
 
-router.get('/options/get', (req, res) => {
+router.post('/options/get', (req, res) => {
     if(req.session == undefined || req.session.Agent == undefined){
         res.status(400);
         res.send({
@@ -382,7 +382,7 @@ router.get('/options/get', (req, res) => {
     return;
 });
 
-router.get('/options/list', (req, res) => {
+router.post('/options/list', (req, res) => {
     if(req.session == undefined || req.session.Agent == undefined){
         res.status(400);
         res.send({

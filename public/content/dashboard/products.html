@@ -32,17 +32,17 @@
                         <th>Title</th>
                         <th>Description</th>
                         <th>Image</th>
+                        <th>Price</th>
                         <th></th>
                     </tr>
                 </thead>
-                <tbody id="AgentsTable">
+                <tbody id="ProductsTable">
                     <tr>
-                        <td>Product Title</td>
-                        <td>Product Description</td>
-                        <td>Product Image</td>
-                        <td class="collapsing" style="padding: 5px;">
-                            <button style="padding: 7px; font-size: 14px;" class="ui mini green button" id="ManageButton" >Manage</button>
-                            <button style="padding: 7px; font-size: 14px;" class="ui mini red button">Delete</button>
+                        <td>
+                            <div class="ui placeholder">
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -54,9 +54,10 @@
 <div class="ui right vertical sidebar menu" id="ManageProductSidebar" style="width: 800px;">
     <br>
     <div class="ui center aligned container">
-        <h1 class="ui header">
-            <div class="content">
-                Product title
+        <h1 class="ui header" id="ProductTitle">
+            <div class="ui placeholder" style="margin-left: 20px;">
+                <div class="line"></div>
+                <div class="line"></div>
             </div>
         </h1>
     </div>
@@ -64,16 +65,16 @@
         <div class="ui form">
             <div class="fields">
                 <div class="field">
-                    <label>Name</label>
-                    <input type="text" readonly="" value="Product Title">
+                    <label>Title</label>
+                    <input type="text" readonly="" value="Loading" id="ManageProductTitleField">
                 </div>
                 <div class="field">
                     <label>Description</label>
-                    <input type="text" readonly="" value="Short description" id="ProductDescription">
+                    <input type="text" readonly="" value="Loading" id="ManageProductDescriptionField">
                 </div>
                 <div class="field">
                     <label>Created</label>
-                    <input type="text" readonly="" value="Creation date" id="ProductCreationDate">
+                    <input type="text" readonly="" value="Loading" id="ManageProductCreatedField">
                 </div>
             </div>
         </div>
@@ -101,7 +102,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody id="AgentsTable">
+            <tbody id="ProductOptionsTable">
                 <tr>
                     <td>Option Title</td>
                     <td>Option Short Description</td>
@@ -113,5 +114,52 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+</div>
+
+<div class="ui mini modal" id="AddProductModal">
+    <i class="close icon"></i>
+    <div class="header">Add Product</div>
+    <div class="content">
+        <div class="ui form">
+            <div class="fields" style="display: flex; flex-direction: column;">
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" placeholder="Title" id="AddProductTitleField">
+                </div>
+                <div class="field">
+                    <label>Short Description</label>
+                    <input type="text" placeholder="Short Description" id="AddProductShortDescriptionField">
+                </div>
+                <div class="field">
+                    <label>Long Description</label>
+                    <textarea rows="3" placeholder="Long Description" id="AddProductLongDescriptionField"></textarea>
+                </div>
+                <div class="field">
+                    <label>Price</label>
+                    <input type="number" min=0 placeholder="Price" id="AddProductPriceField">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui green button" id="AddProductConfirmButton">Add</div>
+    </div>
+</div>
+
+<div class="ui mini modal" id="DeleteProductModal">
+    <i class="close icon"></i>
+    <div class="header">Delete Product</div>
+    <div class="content">
+        <div class="ui form">
+            <div class="fields" style="display: flex; flex-direction: column;">
+                <div class="field">
+                    <label>Are you sure you want to delete this product?</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui red button" id="DeleteProductConfirmButton">Delete</div>
     </div>
 </div>

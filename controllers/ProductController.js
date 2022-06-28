@@ -1,10 +1,9 @@
-const { UnorderedBulkOperation } = require('mongodb');
 const uuid = require('uuid');
 var Database = require('../Database');
 
 exports.CreateProduct = (req, res) => {
 
-    var Product = new Database.ProductModel.Product({
+    var Product = {
         ID: uuid.v4(),
         Title: req.body.Title,
         ShortDescription: null,
@@ -13,7 +12,7 @@ exports.CreateProduct = (req, res) => {
         Price: req.body.Price,
         Options: null,
         Available: true
-    });
+    }
 
     if(req.body.ShortDescription != undefined) {
         Product.ShortDescription = req.body.ShortDescription;
@@ -31,7 +30,8 @@ exports.CreateProduct = (req, res) => {
         Product.Available = req.body.Available;
     }
 
-    Product.save(function (err, product) {
+
+    Database.ProductModel.Product.create(Product, function (err, product) {
         if (err) {
             res.status(400);
             res.send({
@@ -40,15 +40,13 @@ exports.CreateProduct = (req, res) => {
             });
             return;
         }
-        else {
-            res.status(200);
-            res.send({
-                success: true,
-                message: product
-            });
-            return;
-        }
-    });
+        
+        res.send({
+            success: true,
+            data: product
+        });
+    }
+    );
 }
 
 exports.UpdateProduct = (req, res) => {
@@ -96,8 +94,8 @@ exports.UpdateProduct = (req, res) => {
                 if(req.body.Available != undefined){
                     product.Available = req.body.Available;
                 }
-                
-                product.save(function (err, product) {
+
+                Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
                     if (err) {
                         res.status(400);
                         res.send({
@@ -107,14 +105,13 @@ exports.UpdateProduct = (req, res) => {
                         return;
                     }
                     else {
-                        res.status(200);
                         res.send({
                             success: true,
-                            message: product
+                            data: product
                         });
-                        return;
                     }
-                });
+                }
+                );
             }
         }
     }
@@ -143,7 +140,7 @@ exports.DeleteProduct = (req, res) => {
                 return;
             }
             else {
-                product.remove(function (err, product) {
+                Database.ProductModel.Product.deleteOne({ ID: ProductID }, function (err, product) {
                     if (err) {
                         res.status(400);
                         res.send({
@@ -153,13 +150,13 @@ exports.DeleteProduct = (req, res) => {
                         return;
                     }
                     else {
-                        res.status(200);
                         res.send({
-                            success: true
+                            success: true,
+                            data: product
                         });
-                        return;
                     }
-                });
+                }
+                );
             }
         }
     }
