@@ -35,6 +35,17 @@ $(document).ready(function() {
         DeleteProduct(CurrentProductID);
     }
     );
+
+    $('#EditProductButton').click(function() {
+        $('#EditProductModal').modal('show');
+    }
+    );
+
+    $('#DeleteProductButton').click(function() {
+        OpenDeleteProductModal(CurrentProductID);
+    });
+    
+
 }
 );
 
@@ -111,7 +122,59 @@ function AddProductToTable(Product) {
 
 function OpenManageProductSidebar(ID) {
     CurrentProductID = ID;
-    $('#ManageProductSidebar').sidebar('setting', 'transition', 'overlay').sidebar('toggle');  
+    $('#ManageProductSidebar').sidebar('setting', 'transition', 'overlay').sidebar('toggle');
+    LoadProduct(ID);
+}
+
+function LoadProduct(ID){
+    api.post('/product/get', {ProductID: ID})
+    .then(res => {
+        $('#ManageProductTitleField').val(res.data.message.Title);
+        $('#ManageProductShortDescriptionField').val(res.data.message.ShortDescription);
+        $('#ManageProductLongDescriptionField').val(res.data.message.LongDescription);
+        $('#ManageProductPriceField').val(res.data.message.Price);
+        $('#ManageProductCreatedField').val(res.data.message.Created);
+        $('#ProductTitle').html(res.data.message.Title);
+
+        CurrentProductOptions = res.data.message.Options;
+        RefreshOptionsTable(CurrentProductOptions);
+    }
+    )
+    .catch(error => {
+        console.log(error);
+        if(error.response != null && error.response.data != null){
+            if(error.response.data.message == undefined){
+                ShowNotif("Server Error", 'red');
+            };
+            ShowNotif(error.response.data.message, 'red');
+        }
+        else{
+            ShowNotif("Server Error", 'red');
+        }
+    }
+    );
+}
+
+function RefreshOptionsTable(Options) {
+    $('#OptionsTable').html('');
+    if(Options != null) {    
+        Options.forEach(function(Option) {
+            AddOptionToTable(Option);
+        }
+        );
+    }
+}
+
+function AddOptionToTable(Option) {
+    $('#ProductOptionsTable').append(
+        '<tr>' +
+        '<td>' + Option.Title + '</td>' +
+        '<td>' + Option.Price + '</td>' +
+        '<td class="collapsing" style="padding: 5px;">' +
+        '<button style="padding: 7px; font-size: 14px;" class="ui mini red button" onclick="OpenDeleteOptionModal(\'' + Option.ID + '\')">Delete</button>' +
+        '</td>' +
+        '</tr>'
+    );
 }
 
 function OpenDeleteProductModal(ID) {

@@ -69,8 +69,12 @@
                     <input type="text" readonly="" value="Loading" id="ManageProductTitleField">
                 </div>
                 <div class="field">
-                    <label>Description</label>
-                    <input type="text" readonly="" value="Loading" id="ManageProductDescriptionField">
+                    <label>Short description</label>
+                    <input type="text" readonly="" value="Loading" id="ManageProductShortDescriptionField">
+                </div>
+                <div class="field">
+                    <label>Price</label>
+                    <input type="text" readonly="" value="Loading" id="ManageProductPriceField">
                 </div>
                 <div class="field">
                     <label>Created</label>
@@ -161,5 +165,36 @@
     </div>
     <div class="actions">
         <div class="ui red button" id="DeleteProductConfirmButton">Delete</div>
+    </div>
+</div>
+
+<!-- Edit product modal. Edit Title, Short Description, Long Description -->
+<div class="ui mini modal" id="EditProductModal">
+    <i class="close icon"></i>
+    <div class="header">Edit Product</div>
+    <div class="content">
+        <div class="ui form">
+            <div class="fields" style="display: flex; flex-direction: column;">
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" placeholder="Title" id="EditProductTitleField">
+                </div>
+                <div class="field">
+                    <label>Short Description</label>
+                    <input type="text" placeholder="Short Description" id="EditProductShortDescriptionField">
+                </div>
+                <div class="field">
+                    <label>Long Description</label>
+                    <textarea rows="3" placeholder="Long Description" id="EditProductLongDescriptionField"></textarea>
+                </div>
+                <div class="field">
+                    <label>Price</label>
+                    <input type="number" min=0 placeholder="Price" id="EditProductPriceField">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui green button" id="EditProductConfirmButton">Edit</div>
     </div>
 </div>
