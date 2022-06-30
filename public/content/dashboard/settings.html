@@ -1,1 +1,77 @@
-coucou a touss
+<script src="js/dashboard/settings.js"></script>
+
+
+
+
+
+<div class="ui container">
+    <div class="ui  segment ">
+        <h1 class="ui header">
+            <i class="address card icon"></i>
+            <div class="content">
+                <div id="NameTitle">
+                    <div class="ui placeholder" style="margin-bottom: 15px;">
+                          <div class="large line"></div>
+                      </div>
+                </div>
+                <div class="sub header">
+                    Manage your account
+                </div>
+            </div>
+        </h1>
+    </div>
+    <div class="ui segment">
+        <div class="ui form">
+            <div class="three fields">
+                <div class="field">
+                    <label>Name</label>
+                    <input readonly type="text" placeholder="Loading" id="NameField">
+                </div>
+                <div class="field">
+                    <label>Username</label>
+                    <input readonly type="text" placeholder="Loading" id="UsernameField">
+                </div>
+                <div class="field">
+                    <label>Role</label>
+                    <input readonly type="text" placeholder="Loading" id="RoleField">
+                </div>
+                <div class="field">
+                    <label>Creation date</label>
+                    <input readonly type="text" placeholder="Loading" id="CreatedField">
+                </div>
+            </div>
+            <div class="ui divider"></div>
+            <div class="three fields">
+                <div class="field">
+                    <button class="ui green button" id="ChangePasswordButton">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </div>  
+</div>
+
+<div class="ui mini modal" id="ChangePasswordModal">
+    <i class="close icon"></i>
+    <div class="header">
+        Change Password
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="field">
+                <label>Old Password</label>
+                <input type="password" id="ChangePasswordOldPasswordField">
+            </div>
+            <div class="field">
+                <label>New Password</label>
+                <input type="password" id="ChangePasswordNewPasswordField">
+            </div>
+            <div class="field">
+                <label>Confirm Password</label>
+                <input type="password" id="ChangePasswordConfirmPasswordField">
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui green button" id="ChangePasswordConfirmButton">Change Password</div>
+    </div>
+</div>

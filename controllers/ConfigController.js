@@ -1,0 +1,1 @@
+var ConfigManager = require('../ConfigManager');

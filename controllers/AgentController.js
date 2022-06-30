@@ -307,7 +307,11 @@ exports.ListAgents = function(req, res) {
 }
 
 exports.ChangePassword = function(req, res) {
-    Database.AgentModel.Agent.findOne({ Username: req.body.Username }, function(err, agent){
+    var Username = req.session.Agent.Username;
+    var OldPassword = req.body.OldPassword;
+    var NewPassword = req.body.NewPassword;
+
+    Database.AgentModel.Agent.findOne({ Username: Username }, function(err, agent){
         if(err){
             res.status(400);
             res.send({
@@ -325,9 +329,9 @@ exports.ChangePassword = function(req, res) {
             return;
         }
         else{
-            if(agent.Password == req.body.OldPassword){
-                agent.Password = req.body.NewPassword;
-                agent.save(function(err, agent){
+            if(agent.Password == OldPassword){
+                agent.Password = NewPassword;
+                Database.AgentModel.Agent.findOneAndUpdate({ Username: Username }, agent, function(err, agent){
                     if(err){
                         res.status(400);
                         res.send({
@@ -343,13 +347,14 @@ exports.ChangePassword = function(req, res) {
                         });
                         return;
                     }
-                });
+                }
+                );
             }
             else{
                 res.status(400);
                 res.send({
                     success: false,
-                    message: "Invalid password"
+                    message: "Wrong password"
                 });
                 return;
             }
