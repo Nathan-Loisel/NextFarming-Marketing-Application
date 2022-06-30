@@ -167,19 +167,14 @@ exports.AddOption = (req, res) => {
     var Option = {
         ID: uuid.v4(),
         Title: req.body.Title,
-        ShortDescription: null,
-        LongDescription: null,
+        Description: null,
         ImageURL: null,
         Price: req.body.Price,
         Available: true
     };
 
-    if(req.body.ShortDescription != undefined) {
-        Option.ShortDescription = req.body.ShortDescription;
-    }
-
-    if(req.body.LongDescription != undefined) {
-        Option.LongDescription = req.body.LongDescription;
+    if(req.body.Description != undefined) {
+        Option.Description = req.body.ShortDescription;
     }
 
     if(req.body.ImageURL != undefined) {
@@ -211,8 +206,11 @@ exports.AddOption = (req, res) => {
                 return;
             }
             else {
+                if(product.Options == null) {
+                    product.Options = [];
+                }
                 product.Options.push(Option);
-                product.save(function (err, product) {
+                Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
                     if (err) {
                         res.status(400);
                         res.send({
@@ -222,14 +220,13 @@ exports.AddOption = (req, res) => {
                         return;
                     }
                     else {
-                        res.status(200);
                         res.send({
                             success: true,
-                            message: product
+                            data: product
                         });
-                        return;
                     }
-                });
+                }
+                );
             }
         }
     }
@@ -259,8 +256,13 @@ exports.DeleteOption = (req, res) => {
                 return;
             }
             else {
-                product.Options.pull({ ID: OptionID });
-                product.save(function (err, product) {
+                var index = product.Options.findIndex(x => x.ID == OptionID);
+                if(index != -1) {
+                    product.Options.splice(index, 1);
+                }
+
+
+                Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
                     if (err) {
                         res.status(400);
                         res.send({
@@ -270,14 +272,13 @@ exports.DeleteOption = (req, res) => {
                         return;
                     }
                     else {
-                        res.status(200);
                         res.send({
                             success: true,
-                            message: product
+                            data: product
                         });
-                        return;
                     }
-                });
+                }
+                );
             }
         }
     }
@@ -330,12 +331,8 @@ exports.UpdateOption = (req, res) => {
                                 option.Title = req.body.Title;
                             }
 
-                            if(req.body.ShortDescription != undefined){
-                                option.ShortDescription = req.body.ShortDescription;
-                            }
-
-                            if(req.body.LongDescription != undefined){
-                                option.LongDescription = req.body.LongDescription;
+                            if(req.body.Description != undefined){
+                                option.Description = req.body.Description;
                             }
 
                             if(req.body.ImageURL != undefined){

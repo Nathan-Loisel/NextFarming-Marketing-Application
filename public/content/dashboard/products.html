@@ -95,25 +95,24 @@
                 </div>
             </div>
         </h1>
-        <button class="ui green button">Add Option</button>
+        <button class="ui green button" id="AddOptionButton">Add Option</button>
         <div class="ui divider"></div>
         <table class="ui celled table">
             <thead>
                 <tr>
                     <th>Title</th>
                     <th>Description</th>
-                    <th>Image</th>
-                    <th></th>
+                    <th>Price</th>
+                    <th>Manage</th>
                 </tr>
             </thead>
-            <tbody id="ProductOptionsTable">
+            <tbody id="OptionsTable">
                 <tr>
-                    <td>Option Title</td>
-                    <td>Option Short Description</td>
-                    <td>Option Image</td>
-                    <td class="collapsing" style="padding: 5px;">
-                        <button style="padding: 7px; font-size: 14px;" class="ui mini green button" >Edit</button>
-                        <button style="padding: 7px; font-size: 14px;" class="ui mini red button">Delete</button>
+                    <td>
+                        <div class="ui placeholder">
+                            <div class="line"></div>
+                            <div class="line"></div>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -151,6 +150,7 @@
     </div>
 </div>
 
+
 <div class="ui mini modal" id="DeleteProductModal">
     <i class="close icon"></i>
     <div class="header">Delete Product</div>
@@ -168,7 +168,7 @@
     </div>
 </div>
 
-<!-- Edit product modal. Edit Title, Short Description, Long Description -->
+
 <div class="ui mini modal" id="EditProductModal">
     <i class="close icon"></i>
     <div class="header">Edit Product</div>
@@ -196,5 +196,82 @@
     </div>
     <div class="actions">
         <div class="ui green button" id="EditProductConfirmButton">Edit</div>
+    </div>
+</div>
+
+<div class="ui mini modal" id="AddOptionModal">
+    <i class="close icon"></i>
+    <div class="header">Add Option</div>
+    <div class="content">
+        <div class="ui form">
+            <div class="fields" style="display: flex; flex-direction: column;">
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" placeholder="Title" id="AddOptionTitleField">
+                </div>
+                <div class="field">
+                    <label>Description</label>
+                    <input type="text" placeholder="Description" id="AddOptionDescriptionField">
+                </div>
+                <div class="field">
+                    <label>Image</label>
+                    <input type="text" placeholder="Image" id="AddOptionImageField">
+                </div>
+                <div class="field">
+                    <label>Price</label>
+                    <input type="number" min=0 placeholder="Price" id="AddOptionPriceField">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui green button" id="AddOptionConfirmButton">Add</div>
+    </div>
+</div>
+
+<div class="ui mini modal" id="DeleteOptionModal">
+    <i class="close icon"></i>
+    <div class="header">Delete Option</div>
+    <div class="content">
+        <div class="ui form">
+            <div class="fields" style="display: flex; flex-direction: column;">
+                <div class="field">
+                    <label>Are you sure you want to delete this option?</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui red button" id="DeleteOptionConfirmButton">Delete</div>
+    </div>
+</div>
+
+<div class="ui mini modal" id="EditOptionModal">
+    <i class="close icon"></i>
+    <div class="header">Edit Option</div>
+    <div class="content">
+        <div class="ui form">
+            <div class="fields" style="display: flex; flex-direction: column;">
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" placeholder="Title" id="EditOptionTitleField">
+                </div>
+                <div class="field">
+                    <label>Description</label>
+                    <input type="text" placeholder="Description" id="EditOptionDescriptionField">
+                </div>
+                <div class="field">
+                    <label>Image</label>
+                    <input type="text" placeholder="Image" id="EditOptionImageField">
+                </div>
+                <div class="field">
+                    <label>Price</label>
+                    <input type="number" min=0 placeholder="Price" id="EditOptionPriceField">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui green button" id="EditOptionConfirmButton">Edit</div>
     </div>
 </div>
