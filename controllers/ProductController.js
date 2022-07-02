@@ -174,7 +174,7 @@ exports.AddOption = (req, res) => {
     };
 
     if(req.body.Description != undefined) {
-        Option.Description = req.body.ShortDescription;
+        Option.Description = req.body.Description;
     }
 
     if(req.body.ImageURL != undefined) {

@@ -16,7 +16,7 @@ $(document).ready(function() {
 
         var Title = $('#AddProductTitleField').val();
         if(Title == "") { Title = undefined };
-        var ShortDescription = $('#AddProductShortDescriptionField').val();
+        var ShortDescription = $('#AddProductDescriptionField').val();
         if(ShortDescription == "") { ShortDescription = undefined };
         var LongDescription = $('#AddProductLongDescriptionField').val();
         if(LongDescription == "") { LongDescription = undefined };

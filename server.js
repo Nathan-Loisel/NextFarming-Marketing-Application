@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 var bodyParser = require('body-parser');
+const {TextDecoder, TextEncoder} = require("util");
 
 const app = express();
 app.use(bodyParser.json());
