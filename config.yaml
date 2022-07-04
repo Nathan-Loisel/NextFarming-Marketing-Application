@@ -1,4 +1,5 @@
-salut: coucou
-coucou:
-  nathan:
-    loisel: slaut a tous
+smtp:
+  server: saluta
+  port: '20'
+  username: seezza
+  password: gferzger

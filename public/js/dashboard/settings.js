@@ -17,6 +17,12 @@ $(document).ready(function() {
         ChangePassword(OldPassword, NewPassword);
     }
     );
+
+    $('#AdministrationButton').click(function() {
+        window.history.replaceState({}, '', '/dashboard?location=administration');
+        LoadContent('administration');
+    }
+    );
 }
 );
 
