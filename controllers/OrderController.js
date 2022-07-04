@@ -7,7 +7,7 @@ exports.CreateOrder = (req, res) => {
         Client: {
             FirstName: req.body.Client.FirstName,
             LastName: req.body.Client.LastName,
-            Email: null,
+            Email: req.body.Client.Email,
             Phone: null,
             Address: null,
             City: null,

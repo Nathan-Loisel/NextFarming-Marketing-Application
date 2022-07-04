@@ -10,8 +10,7 @@ const ProductSchema = new Mongoose.Schema({
     Options: [{
         ID: String,
         Title: String,
-        ShortDescription: String,
-        LongDescription: String,
+        Description: String,
         ImageURL: String,
         Price: Number,
         Available: Boolean

@@ -174,7 +174,7 @@ exports.AddOption = (req, res) => {
     };
 
     if(req.body.Description != undefined) {
-        Option.Description = req.body.ShortDescription;
+        Option.Description = req.body.Description;
     }
 
     if(req.body.ImageURL != undefined) {
@@ -308,7 +308,42 @@ exports.UpdateOption = (req, res) => {
                 return;
             }
             else {
-                product.Options.findOne({ ID: OptionID }, function (err, option) {
+
+                Options = product.Options;
+                var index = Options.findIndex(x => x.ID == OptionID);
+
+                if(index == -1) {
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Can't find option"
+                    });
+                    return;
+                }
+
+                if(req.body.Title != undefined) {
+                    Options[index].Title = req.body.Title;
+                }
+
+                if(req.body.Description != undefined) {
+                    Options[index].Description = req.body.Description;
+                }
+
+                if(req.body.ImageURL != undefined) {
+                    Options[index].ImageURL = req.body.ImageURL;
+                }
+
+                if(req.body.Price != undefined) {
+                    Options[index].Price = req.body.Price;
+                }
+
+                if(req.body.Available != undefined) {
+                    Options[index].Available = req.body.Available;
+                }
+
+                product.Options = Options;
+
+                Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
                     if (err) {
                         res.status(400);
                         res.send({
@@ -318,56 +353,13 @@ exports.UpdateOption = (req, res) => {
                         return;
                     }
                     else {
-                        if (option == null) {
-                            res.status(400);
-                            res.send({
-                                success: false,
-                                message: "Can't find option"
-                            });
-                            return;
-                        }
-                        else {
-                            if(req.body.Title != undefined){
-                                option.Title = req.body.Title;
-                            }
-
-                            if(req.body.Description != undefined){
-                                option.Description = req.body.Description;
-                            }
-
-                            if(req.body.ImageURL != undefined){
-                                option.ImageURL = req.body.ImageURL;
-                            }
-
-                            if(req.body.Price != undefined){
-                                option.Price = req.body.Price;
-                            }
-
-                            if(req.body.Available != undefined){
-                                option.Available = req.body.Available;
-                            }
-
-                            option.save(function (err, option) {
-                                if (err) {
-                                    res.status(400);
-                                    res.send({
-                                        success: false,
-                                        message: "Database error"
-                                    });
-                                    return;
-                                }
-                                else {
-                                    res.status(200);
-                                    res.send({
-                                        success: true,
-                                        message: product
-                                    });
-                                    return;
-                                }
-                            });
-                        }
+                        res.send({
+                            success: true,
+                            data: product
+                        });
                     }
-                });
+                }
+                );
             }
         }
     }

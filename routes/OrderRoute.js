@@ -60,6 +60,15 @@ router.post('/create', [OrderMiddleWare.CheckProductID],  (req, res) => {
             return;
         }
 
+        if(req.body.Client.Email == undefined) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Invalid client"
+            });
+            return;
+        }
+
         if(req.body.Price == undefined) {
             res.status(400);
             res.send({

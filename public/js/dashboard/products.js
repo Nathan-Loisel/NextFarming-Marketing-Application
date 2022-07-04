@@ -380,7 +380,7 @@ function EditOption(OptionID, Option){
         Price: Option.Price 
     })
     .then(res => {
-        LoadProduct(ProductID);
+        LoadProduct(CurrentProductID);
         ShowNotif("Option successfully updated", 'green');
     }
     )
