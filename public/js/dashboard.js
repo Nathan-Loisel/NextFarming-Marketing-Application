@@ -67,7 +67,7 @@ $(document)
 
     Role = "Guest";
     if(res.data.message.Role == 0) Role = "Guest"; 
-    if(res.data.message.Role == 1) Role = "OPERATOR";
+    if(res.data.message.Role == 1) Role = "Operator";
     if(res.data.message.Role == 2) Role = "Administrator";
     $('#DropdownName').html(`
       <h4>${res.data.message.Username}</h4> ${Role}
@@ -124,7 +124,7 @@ function LoadContent(location){
   }
   else if(location == 'administration'){
     $('#content').load('/content/dashboard/administration');
-    SetActiveTab('AdministrationButton');
+    SetActiveTab(null);
   }
   else if(location == 'settings'){
     $('#content').load('/content/dashboard/settings');

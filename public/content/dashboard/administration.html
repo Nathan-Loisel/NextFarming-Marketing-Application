@@ -1,0 +1,123 @@
+<script src="js/dashboard/administration.js"></script>
+
+
+
+<div class="ui container">
+    <div class="ui  segment ">
+        <h1 class="ui header">
+            <i class="tools icon"></i>
+            <div class="content">
+                <div id="NameTitle">
+                    Administration
+                </div>
+            </div>
+        </h1>
+    </div>
+    <div class="ui segment">
+        <h1 class="ui header">
+            <i class="envelope icon"></i>
+            <div class="content">
+                <div id="NameTitle">
+                    SMTP settings
+                </div>
+                <div class="sub header">
+                    Mail server configuration
+                </div>
+            </div>
+        </h1>
+
+        <div class="ui form">
+
+            <div class="three fields">
+                <div class="field">
+                    <label>Server</label>
+                    <input readonly type="text" placeholder="Loading" id="SMTPServerField">
+                </div>
+                <div class="field">
+                    <label>Port</label>
+                    <input readonly type="text" min="1" placeholder="Loading" id="SMTPPortField">
+                </div>
+                <div class="field">
+                    <label>Username</label>
+                    <input readonly type="text" placeholder="Loading" id="SMTPUsernameField">
+                </div>
+                <div class="field">
+                    <label>Password</label>
+                    <input readonly type="password" placeholder="Loading" id="SMTPPasswordField">
+                </div>
+            </div>
+            <div class="four fields">
+                <div class="field">
+                    <button class="ui green button" id="EditSMTPButton">
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="four fields">
+                <div class="field">
+                    <button class="ui green button" id="TestSMTPButton">
+                        Test
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>  
+</div>
+
+<div class="ui modal" id="EditSMTPModal">
+    <i class="close icon"></i>
+    <div class="header">
+        Edit SMTP settings
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="three fields">
+                <div class="field">
+                    <label>Server</label>
+                    <input type="text" placeholder="Server" id="EditSMTPServerField">
+                </div>
+                <div class="field">
+                    <label>Port</label>
+                    <input type="number" min="1" placeholder="Port" id="EditSMTPPortField">
+                </div>
+                <div class="field">
+                    <label>Username</label>
+                    <input type="text" placeholder="Username" id="EditSMTPUsernameField">
+                </div>
+                <div class="field">
+                    <label>Password</label>
+                    <input type="password" placeholder="Password" id="EditSMTPPasswordField">
+                </div>
+            </div>
+            <div class="four fields">
+                <div class="field">
+                    <button class="ui green button" id="EditSMTPConfirmButton">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui mini modal" id="TestSMTPModal">
+    <i class="close icon"></i>
+    <div class="header">
+        Test SMTP settings
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="field">
+                <label>Destination mail</label>
+                <input type="text" placeholder="Destination mail" id="TestSMTPDestinationField">
+            </div>
+            <div class="four fields">
+                <div class="field">
+                    <button class="ui green button" id="TestSMTPConfirmButton">
+                        Test
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
