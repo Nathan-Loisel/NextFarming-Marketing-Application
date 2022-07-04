@@ -1,5 +1,5 @@
 smtp:
-  server: saluta
+  server: salutaa
   port: '20'
   username: seezza
   password: gferzger
