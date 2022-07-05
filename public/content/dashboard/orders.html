@@ -539,19 +539,25 @@
         Add options
     </div>
     <div class="content">
-        <div class="ui form">
-            <div class="field">
-                <label>Title</label>
-                <input type="text" placeholder="Title">
+        <div class="ui segment">
+        <div class="ui middle aligned divided list" id="OptionsList">
+            <div class="item">
+                <div class="right floated content">
+                    <!-- Big Checkbox -->
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="big" tabindex="0" class="hidden">
+                        <label>Big</label>
+                    </div>
+                </div>
+                <img class="ui avatar image" src="/images/avatar2/small/lena.png">
+                <div class="content">
+                    <span style="margin-right: 10px;" class="popupButton" data-content="Description of the option">Title</span>
+                    <div class="ui label">
+                        23€
+                    </div>
+                </div>
             </div>
-            <div class="field">
-                <label>Description</label>
-                <textarea></textarea>
-            </div>
-            <div class="field">
-                <label>Price</label>
-                <input type="number" min="0" value="0">
-            </div>
+          </div>
         </div>
     </div>
     <div class="actions">
