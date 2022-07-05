@@ -449,6 +449,56 @@
             </div>
             <div class="ui segment">
                 <div class="ui middle aligned divided list" id="ProductsList">
+                    <div class="item">
+                        <div class="right floated content">
+                            <button class="ui icon compact blue button popupButton" data-content="Add options">
+                                <i class="box icon"></i>
+                            </button>
+                            <button class="ui icon compact green button popupButton"  data-content="Add product">
+                                <i class="plus icon"></i>
+                            </button>
+                            <button class="ui icon compact button popupButton" data-content="Reset product">
+                                <i class="redo icon"></i>
+                            </button>
+                        </div>
+                        <img class="ui avatar image" src="/">
+                        <div class="content">
+                            <span style="margin-right: 10px;" class="popupButton" data-content="Description of the product">Title</span>
+                            <div class="ui label">
+                                23€
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+            </div>
+
+
+            <div class="ui divider"></div>
+            <div class="ui header">
+                <h2>Your order</h2>
+            </div>
+            <div class="ui segment">
+                <div class="ui middle aligned divided list" id="SelectedProductsList">
+                    <div class="item">
+                        <div class="right floated content">
+                            <button class="ui icon compact blue button popupButton" data-content="Options">
+                                <i class="box icon"></i>
+                            </button>
+                            <div class="ui mini input">
+                                <input type="number" min="1" value="1" id="amount">
+                            </div>
+                            <button class="ui icon compact red button popupButton" data-content="Remove product">
+                                <i class="minus icon"></i>
+                            </button>
+                        </div>
+                        <img class="ui avatar image" src="/images/avatar2/small/lena.png">
+                        <div class="content">
+                            <span style="margin-right: 10px;" class="popupButton" data-content="Description of the product">Title</span>
+                            <div class="ui label">
+                                23€
+                            </div>
+                        </div>
+                    </div>
                   </div>
             </div>
 
@@ -479,6 +529,37 @@
         </div>
         <div class="ui positive right labeled icon button" id="NewOrderButton">
             Create
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+<div class="ui small modal" id="NewOrderOptionsModal">
+    <div class="header">
+        Add options
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="field">
+                <label>Title</label>
+                <input type="text" placeholder="Title">
+            </div>
+            <div class="field">
+                <label>Description</label>
+                <textarea></textarea>
+            </div>
+            <div class="field">
+                <label>Price</label>
+                <input type="number" min="0" value="0">
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            Cancel
+        </div>
+        <div class="ui positive right labeled icon button">
+            Add
             <i class="checkmark icon"></i>
         </div>
     </div>
