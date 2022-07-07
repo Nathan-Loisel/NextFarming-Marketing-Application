@@ -534,29 +534,13 @@
     </div>
 </div>
 
-<div class="ui small modal" id="NewOrderOptionsModal">
+<div class="ui small modal" id="NewOrderAddOptionsModal">
     <div class="header">
         Add options
     </div>
     <div class="content">
         <div class="ui segment">
-        <div class="ui middle aligned divided list" id="OptionsList">
-            <div class="item">
-                <div class="right floated content">
-                    <!-- Big Checkbox -->
-                    <div class="ui checkbox">
-                        <input type="checkbox" name="big" tabindex="0" class="hidden">
-                        <label>Big</label>
-                    </div>
-                </div>
-                <img class="ui avatar image" src="/images/avatar2/small/lena.png">
-                <div class="content">
-                    <span style="margin-right: 10px;" class="popupButton" data-content="Description of the option">Title</span>
-                    <div class="ui label">
-                        23€
-                    </div>
-                </div>
-            </div>
+        <div class="ui middle aligned divided list" id="NewOrderAddOptionsList">
           </div>
         </div>
     </div>
@@ -564,8 +548,8 @@
         <div class="ui black deny button">
             Cancel
         </div>
-        <div class="ui positive right labeled icon button">
-            Add
+        <div class="ui positive right labeled icon button" id="NewOrderAddOptionsConfirmButton">
+            Confirm
             <i class="checkmark icon"></i>
         </div>
     </div>
