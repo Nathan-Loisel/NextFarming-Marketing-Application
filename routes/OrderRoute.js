@@ -41,7 +41,7 @@ router.post('/create', [OrderMiddleWare.CheckProductID],  (req, res) => {
             });
             return;
         }
-    
+
         if(req.body.Client.FirstName == undefined) {
             res.status(400);
             res.send({
@@ -191,5 +191,47 @@ router.post('/confirm', (req, res) => {
 
     OrderController.ConfirmOrder(req, res);
 });
+
+router.post('/list', (req, res) => {
+    if(req.session == undefined || req.session.Agent == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You are not logged in"
+        });
+        return;
+    }
+
+    if(req.session.Agent.Role < 0){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You don't have the required permission"
+        });
+        return;
+    }
+
+    if(req.body == undefined) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid body"
+        });
+        return;
+    }
+
+    var ValidStatus = [0, 1, 2, 3];
+    if(req.body.Status == undefined || ValidStatus.indexOf(req.body.Status) == -1) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid status"
+        });
+        return;
+    }
+
+    OrderController.ListOrders(req, res);
+});
+
 
 module.exports = router;

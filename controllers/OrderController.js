@@ -18,7 +18,7 @@ exports.CreateOrder = (req, res) => {
         Agent: req.session.Agent.Username,
         Products: req.body.Products,
         Price: req.body.Price,
-        Status: OrderStatus.PENDING,
+        Status: 0,
         Dates: {
             0: Date.now()
         }
@@ -271,4 +271,26 @@ exports.ConfirmOrder = (req, res) => {
             });
         });
     });
+}
+
+exports.ListOrders = (req, res) => {
+    var Status = req.body.Status;
+    
+    Database.OrderModel.Order.find({ Status: Status }, function (err, orders) {
+        if (err) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+
+        res.status(200);
+        res.send({
+            success: true,
+            message: orders
+        });
+    }
+    ).sort({ ID: -1 });
 }

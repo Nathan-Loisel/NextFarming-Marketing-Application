@@ -1,6 +1,7 @@
 var Database = require('../Database')
 
 CheckProductID = (req, res, next) => {
+    Products = req.body.Products;
     for(var i = 0; i < Products.length; i++){
         var Product = Products[i];
         if(Product.ProductID == undefined || Product.Quantity == undefined || !IsInteger(Product.Quantity)){

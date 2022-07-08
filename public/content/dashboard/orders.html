@@ -49,7 +49,7 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="CompletedOrdersTable">
+                    <tbody id="CompletedOrdersTable" class="OrdersTable">
                         <tr>
                             <td>
                                 <div class="ui placeholder">
@@ -78,7 +78,7 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="PendingOrdersTable">
+                    <tbody id="PendingOrdersTable" class="OrdersTable">
                         <tr>
                             <td>
                                 <div class="ui placeholder">
@@ -107,7 +107,7 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="ArchivedOrdersTable">
+                    <tbody id="ArchivedOrdersTable" class="OrdersTable">
                         <tr>
                             <td>
                                 <div class="ui placeholder">
@@ -527,7 +527,7 @@
         <div class="ui black deny button">
             Cancel
         </div>
-        <div class="ui positive right labeled icon button" id="NewOrderButton">
+        <div class="ui positive right labeled icon button" id="NewOrderConfirmButton">
             Create
             <i class="checkmark icon"></i>
         </div>
@@ -549,6 +549,28 @@
             Cancel
         </div>
         <div class="ui positive right labeled icon button" id="NewOrderAddOptionsConfirmButton">
+            Confirm
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+<div class="ui small modal" id="NewOrderSelectedProductCheckOptionsModal">
+    <div class="header">
+        Check options
+    </div>
+    <div class="content">
+        <div class="ui segment">
+            <div class="ui middle aligned divided list" id="NewOrderSelectedProductCheckOptionsList">
+                No options selected
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            Cancel
+        </div>
+        <div class="ui positive right labeled icon button" id="NewOrderSelectedProductCheckOptionsConfirmButton">
             Confirm
             <i class="checkmark icon"></i>
         </div>

@@ -1,4 +1,5 @@
 const Mongoose = require('mongoose');
+const { Product } = require('./ProductModel');
 
 const OrderSchema = new Mongoose.Schema({
     ID: String,
@@ -14,14 +15,15 @@ const OrderSchema = new Mongoose.Schema({
     },
     AgentID: String,
     Products: [{
-        ProductID: String,
-        Options: [{
+        ID: String,
+        Ammount: Number,
+        Product: Object,
+        SelectedOptions: [{
             OptionID: String
         }],
-        Quantity: Number
     }],
     Price: Number,
-    Status: String,
+    Status: Number,
     Dates: {
         Created: Date,
         Updated: Date
