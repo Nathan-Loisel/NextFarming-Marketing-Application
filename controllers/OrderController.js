@@ -294,3 +294,102 @@ exports.ListOrders = (req, res) => {
     }
     ).sort({ ID: -1 });
 }
+
+exports.GetOrder = (req, res) => {
+    var OrderID = req.body.OrderID;
+
+    Database.OrderModel.Order.findOne({ ID: OrderID }, function (err, order) {
+        if (err) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+
+        if (order == null) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Order not found"
+            });
+            return;
+        }
+
+        res.status(200);
+        res.send({
+            success: true,
+            message: order
+        });
+    });
+}
+
+exports.ChangeStatus = (req, res) => {
+    var OrderID = req.body.OrderID;
+    var Status = req.body.Status;
+
+    Database.OrderModel.Order.findOne({ ID: OrderID }, function (err, order) {
+        if (err) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+
+        if (order == null) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Order not found"
+            });
+            return;
+        }
+
+        if(Status == 0 || Status == 1 || Status == 2 || Status == 3){
+            order.Status = Status;
+            if(Status == 0){
+                order.Dates[0] = Date.now();
+            }
+
+            if(Status == 1){
+                order.Dates[1] = Date.now();
+            }
+
+            if(Status == 2){
+                order.Dates[2] = Date.now();
+            }
+
+            if(Status == 3){
+                order.Dates[3] = Date.now();
+            }
+        }
+        else{
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Invalid status"
+            });
+            return;
+        }
+
+        order.save(function (err, order) {
+            if (err) {
+                res.status(400);
+                res.send({
+                    success: false,
+                    message: "Database error"
+                });
+                return;
+            }
+
+            res.status(200);
+            res.send({
+                success: true,
+                message: order
+            });
+        });
+    });
+}

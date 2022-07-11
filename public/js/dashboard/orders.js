@@ -3,6 +3,9 @@ var NewOrderSelectedProducts = [];
 var NewOrderCurrentProducts = [];
 var NewOrderSelectedOptions = [];
 var NewOrderCurrentProductID = null;
+var CurrentOrder = null;
+var ActualOrdersTab = null;
+var CurrentOrderID = null;
 
 // NewOrderSelectedProducts = [
 //     {
@@ -19,35 +22,41 @@ $(document).ready(function() {
         var tabName = $(this).data('tab');
         if(tabName == 'completed'){
             LoadOrders(1);
+            ActualOrdersTab = 1;
         }
         if(tabName == 'pending'){
             LoadOrders(0);
+            ActualOrdersTab = 0;
         }
         if(tabName == 'archived'){
             LoadOrders(2);
+            ActualOrdersTab = 2;
         }
+
     }
     );
 
     $('.ui.dropdown').dropdown();
+    
     $('.popupButton').popup();
 
     $('.ui.modal').modal({
         allowMultiple: true
     });
 
-    $('#NewOrderModal').modal({
+    $('#EditOrderModal').modal({
         closable: false
     });
 
     $('#NewOrderButton').click(function() {
         NewOrderLoadProducts();
-        $('#NewOrderModal').modal('show');
+        CurrentOrderID = null;
+        $('#EditOrderModal').modal('show');
     }
     );
 
-    $('#NewOrderConfirmButton').click(function() {
-        CreateNewOrder();
+    $('#EditOrderConfirmButton').click(function() {
+        EditOrder();
     }
     );
 
@@ -55,6 +64,11 @@ $(document).ready(function() {
         var Product = NewOrderCurrentProducts.find(function(Product) { return Product.ID == NewOrderCurrentProductID; });
         Product.SelectedOptions = NewOrderSelectedOptions;
         NewOrderRefreshProductsTable();
+    }
+    );
+
+    $('#ChangeOrderStatusConfirmButton').click(function() {
+        ChangeOrderStatus();
     }
     );
 
@@ -263,7 +277,6 @@ function NewOrderAddProductButton(ProductID){
 
     NewOrderCurrentProducts.find(function(Product) { return Product.ID == ProductID; }).SelectedOptions = [];
     NewOrderRefreshProductsTable();
-    console.log(NewOrderSelectedProducts);
 
 }
 
@@ -373,16 +386,18 @@ function NewOrderRemoveProductButton(ProductID, Options){
     NewOrderRefreshProductsTable();
 }
 
-function CreateNewOrder(){
+function EditOrder(){
+    var OrderID = CurrentOrderID;
+
     var Client = {
-        FirstName: $('#NewOrderFirstNameField').val(),
-        LastName: $('#NewOrderLastNameField').val(),
-        Email: $('#NewOrderEmailField').val(),
-        Phone: $('#NewOrderPhoneField').val(),
-        Address: $('#NewOrderAddressField').val(),
-        PostCode: $('#NewOrderPostCodeField').val(),
-        City: $('#NewOrderCityField').val(),
-        Country: $('#NewOrderCountryField').val()
+        FirstName: $('#EditOrderFirstNameField').val(),
+        LastName: $('#EditOrderLastNameField').val(),
+        Email: $('#EditOrderEmailField').val(),
+        Phone: $('#EditOrderPhoneField').val(),
+        Address: $('#EditOrderAddressField').val(),
+        PostCode: $('#EditOrderPostCodeField').val(),
+        City: $('#EditOrderCityField').val(),
+        Country: $('#EditOrderCountryField').val()
     }
     if(Client.FirstName == undefined || Client.LastName == undefined || Client.Email == undefined){
         $('#NewOrderClientError').html('Please fill in all client required fields');
@@ -415,24 +430,43 @@ function CreateNewOrder(){
     }
 
 
-    axios.post('/order/create', Data)
-    .then(function (response) {
-        ShowNotif("Order created", "green");
-        $('#NewOrderModal').modal('hide');
-    }
-    )
-    .catch(function (error) {
-        if(error.response != null && error.response.data != null){
-            if(error.response.data.message == undefined){
+    if(OrderID == null){
+        console.log("ok");
+        axios.post('/order/create', Data)
+        .then(function (response) {
+            ShowNotif("Order created", "green");
+            $('#NewOrderModal').modal('hide');
+            LoadOrders(ActualOrdersTab);
+        }
+        )
+        .catch(function (error) {
+            if(error.response != null && error.response.data != null){
+                if(error.response.data.message == undefined){
+                    ShowNotif("Server Error", 'red');
+                };
+                ShowNotif(error.response.data.message, 'red');
+            }
+            else{
                 ShowNotif("Server Error", 'red');
-            };
-            ShowNotif(error.response.data.message, 'red');
+            }
         }
-        else{
-            ShowNotif("Server Error", 'red');
-        }
+        );
     }
-    );
+    else{
+        Data.OrderID = OrderID;
+        axios.post('/order/update', Data)
+        .then(function (response) {
+            ShowNotif("Order updated", "green");
+            $('#NewOrderModal').modal('hide');
+            LoadOrders(ActualOrdersTab);
+        }
+        )
+        .catch(function (error) {
+            HandleError(error);
+        }
+        );
+    }
+
 
 }
 
@@ -476,6 +510,8 @@ function LoadOrders(Status){
     );
 }
 
+LoadOrders(1);
+
 function RefreshPendingOrdersTable(Orders){
     if(Orders == undefined){
         $('#PendingOrdersTable').html('<div class="ui center aligned header">No pending orders</div>');
@@ -486,19 +522,14 @@ function RefreshPendingOrdersTable(Orders){
             `<tr>
                 <td>${Order.Client.FirstName} ${Order.Client.LastName}</td>
                 <td>${Order.Client.Email}</td>
-                <td>${Order.CreatedAt}</td>
+                <td>${Order.Price}€</td>
+                <td>Pending</td>
                 <td>
-                    <button class="ui button" onclick="ShowOrderDetails(${Order.ID})">
-                        <i class="info circle icon"></i>
+                    <button style="padding: 7px; font-size: 14px;" class="ui blue button" onclick="ShowOrderDetailsModal('${Order.ID}')">
                         Details
                     </button>
-                    <button class="ui button" onclick="ShowOrderEditModal(${Order.ID})">
-                        <i class="edit icon"></i>
-                        Edit
-                    </button>
-                    <button class="ui button" onclick="ShowOrderDeleteModal(${Order.ID})">
-                        <i class="trash icon"></i>
-                        Delete
+                    <button style="padding: 7px; font-size: 14px;" class="ui orange button" onclick="ShowOrderChangeStatusModal('${Order.ID}')">
+                        Change status
                     </button>
                 </td>
             </tr>`
@@ -517,19 +548,17 @@ function RefreshConfirmedOrdersTable(Orders){
             `<tr>
                 <td>${Order.Client.FirstName} ${Order.Client.LastName}</td>
                 <td>${Order.Client.Email}</td>
-                <td>${Order.CreatedAt}</td>
+                <td>${Order.Price}€</td>
+                <td>Pending</td>
                 <td>
-                    <button class="ui button" onclick="ShowOrderDetails(${Order.ID})">
-                        <i class="info circle icon"></i>
+                    <button style="padding: 7px; font-size: 14px;" class="ui blue button" onclick="ShowOrderDetailsModal('${Order.ID}')">
                         Details
                     </button>
-                    <button class="ui button" onclick="ShowOrderEditModal(${Order.ID})">
-                        <i class="edit icon"></i>
+                    <button style="padding: 7px; font-size: 14px;" class="ui blue button" onclick="ShowOrderEditModal('${Order.ID}')">
                         Edit
                     </button>
-                    <button class="ui button" onclick="ShowOrderDeleteModal(${Order.ID})">
-                        <i class="trash icon"></i>
-                        Delete
+                    <button style="padding: 7px; font-size: 14px;" class="ui orange button" onclick="ShowOrderChangeStatusModal('${Order.ID}')">
+                        Change status
                     </button>
                 </td>
             </tr>`
@@ -548,23 +577,81 @@ function RefreshArchivedOrdersTable(Orders){
             `<tr>
                 <td>${Order.Client.FirstName} ${Order.Client.LastName}</td>
                 <td>${Order.Client.Email}</td>
-                <td>${Order.CreatedAt}</td>
+                <td>${Order.Price}€</td>
+                <td>Pending</td>
                 <td>
-                    <button class="ui button" onclick="ShowOrderDetails(${Order.ID})">
-                        <i class="info circle icon"></i>
+                    <button style="padding: 7px; font-size: 14px;" class="ui blue button" onclick="ShowOrderDetailsModal('${Order.ID}')">
                         Details
                     </button>
-                    <button class="ui button" onclick="ShowOrderEditModal(${Order.ID})">
-                        <i class="edit icon"></i>
-                        Edit
-                    </button>
-                    <button class="ui button" onclick="ShowOrderDeleteModal(${Order.ID})">
-                        <i class="trash icon"></i>
-                        Delete
+                    <button style="padding: 7px; font-size: 14px;" class="ui orange button" onclick="ShowOrderChangeStatusModal('${Order.ID}')">
+                        Change status
                     </button>
                 </td>
             </tr>`
         );
+    }
+    );
+}
+
+function ShowOrderEditModal(OrderID){
+    $('#EditOrderModal').modal('show');
+    CurrentOrderID = OrderID;
+
+    axios.post('/order/get', {OrderID: OrderID})
+    .then(function (response) {
+        CurrentOrder = response.data.message;
+        $('#EditOrderFirstNameField').val(CurrentOrder.Client.FirstName);
+        $('#EditOrderLastNameField').val(CurrentOrder.Client.LastName);
+        $('#EditOrderEmailField').val(CurrentOrder.Client.Email);
+        $('#EditOrderPhoneField').val(CurrentOrder.Client.Phone);
+        $('#EditOrderAddressField').val(CurrentOrder.Client.Address);
+        $('#EditOrderPostCodeField').val(CurrentOrder.Client.PostCode);
+        $('#EditOrderCityField').val(CurrentOrder.Client.City);
+        $('#EditOrderCountryField').val(CurrentOrder.Client.Country);
+    }
+    )
+    .catch(function (error) {
+        if(error.response != null && error.response.data != null){
+            if(error.response.data.message == undefined){
+                ShowNotif("Server Error", 'red');
+            };
+            ShowNotif(error.response.data.message, 'red');
+        }
+        else{
+            ShowNotif("Server Error", 'red');
+        }
+    }
+    );
+}
+
+function ShowOrderChangeStatusModal(OrderID){
+    CurrentOrderID = OrderID;
+    $('#ChangeOrderStatusModal').modal('show');
+}
+
+function ShowOrderDetailsModal(OrderID){
+    $('#OrderDetailsModal').modal('show');
+    CurrentOrderID = OrderID;
+}
+
+function ChangeOrderStatus(){
+    var OrderID = CurrentOrderID;
+    var Status = $('#EditOrderStatusDropdown').dropdown('get value');
+
+    if(Status == "" || Status == undefined || Status == null || (Status != 0 && Status != 1 && Status != 2 && Status != 3)){
+        ShowNotif("Please select a status", 'red');
+        return;
+    }
+
+    axios.post('/order/changestatus', {OrderID: OrderID, Status: Status})
+    .then(function (response) {
+        ShowNotif("Order status successfully changed", 'green');
+        $('#ChangeOrderStatusModal').modal('hide');
+        LoadOrders(ActualOrdersTab);
+    }
+    )
+    .catch(function (error) {
+        HandleError(error);
     }
     );
 }

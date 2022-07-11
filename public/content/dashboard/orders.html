@@ -43,13 +43,12 @@
                         <tr>
                             <th>Client</th>
                             <th>Mail</th>
-                            <th>Creation date</th>
-                            <th>Products</th>
+                            <th>Price</th>
                             <th>Status</th>
-                            <th></th>
+                            <th>Manage</th>
                         </tr>
                     </thead>
-                    <tbody id="CompletedOrdersTable" class="OrdersTable">
+                    <tbody id="ConfirmedOrdersTable" class="OrdersTable">
                         <tr>
                             <td>
                                 <div class="ui placeholder">
@@ -72,10 +71,9 @@
                         <tr>
                             <th>Client</th>
                             <th>Mail</th>
-                            <th>Creation date</th>
-                            <th>Products</th>
+                            <th>Price</th>
                             <th>Status</th>
-                            <th></th>
+                            <th>Manage</th>
                         </tr>
                     </thead>
                     <tbody id="PendingOrdersTable" class="OrdersTable">
@@ -102,9 +100,8 @@
                             <th>Client</th>
                             <th>Mail</th>
                             <th>Creation date</th>
-                            <th>Products</th>
                             <th>Status</th>
-                            <th></th>
+                            <th>Manage</th>
                         </tr>
                     </thead>
                     <tbody id="ArchivedOrdersTable" class="OrdersTable">
@@ -124,8 +121,7 @@
 </div>
 
 
-<div class="ui modal" id="NewOrderModal">
-    
+<div class="ui modal" id="EditOrderModal">
     <i class="close icon"></i>
     <div class="content">
         <div class="ui top attached tabular menu">
@@ -151,44 +147,44 @@
                     <div class="two fields">
                         <div class="required field">
                             <label>First name</label>
-                            <input type="text" placeholder="First name" id="NewOrderFirstNameField">
+                            <input type="text" placeholder="First name" id="EditOrderFirstNameField">
                         </div>
                         <div class="required field">
                             <label>Last name</label>
-                            <input type="text" placeholder="Last name" id="NewOrderLastNameField">
+                            <input type="text" placeholder="Last name" id="EditOrderLastNameField">
                         </div>
                     </div>
                 </div>
                 <div class="two fields">
                     <div class="required field">
                         <label>Mail</label>
-                        <input type="text" placeholder="Mail" id="NewOrderEmailField">
+                        <input type="text" placeholder="Mail" id="EditOrderEmailField">
                     </div>
                     <div class="field">
                         <label>Phone</label>
-                        <input type="text" placeholder="Phone" id="NewOrderPhoneField">
+                        <input type="text" placeholder="Phone" id="EditOrderPhoneField">
                     </div>
                 </div>
                 <h4 class="ui dividing header">Client address</h4>
                 <div class="two fields">
                     <div class="field">
                         <label>Address</label>
-                        <input type="text" placeholder="Address" id="NewOrderAddressField">
+                        <input type="text" placeholder="Address" id="EditOrderAddressField">
                     </div>
                     <div class="field">
                         <label>Post code</label>
-                        <input type="text" placeholder="Post code" id="NewOrderPostCodeField">
+                        <input type="text" placeholder="Post code" id="EditOrderPostCodeField">
                     </div>
                 </div>
                 <div class="two fields">
                     <div class="field">
                         <label>City</label>
-                        <input type="text" placeholder="City" id="NewOrderCityField">
+                        <input type="text" placeholder="City" id="EditOrderCityField">
                     </div>
                     <div class="field">
                         <label>Country</label>
                         <div class="ui fluid search selection dropdown">
-                            <input type="hidden" name="country" id="NewOrderCountryField">
+                            <input type="hidden" name="country" id="EditOrderCountryField">
                             <i class="dropdown icon"></i>
                             <div class="default text">Select Country</div>
                             <div class="menu">
@@ -505,17 +501,16 @@
         </div>
 
         
-        <!-- Comments tab -->
         <div class="ui bottom attached tab segment" data-tab="comments">
             <div class="ui form">
                 <div class="field">
                     <label>Customer Comments</label>
-                    <textarea></textarea>
+                    <textarea id="EditOrderCustomerCommentsField"></textarea>
                 </div>
 
                 <div class="field">
                     <label>Product Comments</label>
-                    <textarea></textarea>
+                    <textarea id="EditOrderProductsCommentsField"></textarea>
                 </div>
             </div>
 
@@ -527,8 +522,8 @@
         <div class="ui black deny button">
             Cancel
         </div>
-        <div class="ui positive right labeled icon button" id="NewOrderConfirmButton">
-            Create
+        <div class="ui positive right labeled icon button" id="EditOrderConfirmButton">
+            Validate
             <i class="checkmark icon"></i>
         </div>
     </div>
@@ -573,6 +568,75 @@
         <div class="ui positive right labeled icon button" id="NewOrderSelectedProductCheckOptionsConfirmButton">
             Confirm
             <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+
+<div class="ui small modal" id="ChangeOrderStatusModal">
+    <div class="header">
+        Change order status
+    </div>
+    <div class="content">
+        <div class="ui segment">
+            <div class="ui fluid selection dropdown" id="EditOrderStatusDropdown">
+                <i class="dropdown icon"></i>
+                <div class="default text">Select a status</div>
+                <div class="menu">
+                    <div class="item" data-value="0">Pending</div>
+                    <div class="item" data-value="1">Completed</div>
+                    <div class="item" data-value="2">Archived</div>
+                    <div class="item" data-value="3">Deleted</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            Cancel
+        </div>
+        <div class="ui positive right labeled icon button" id="ChangeOrderStatusConfirmButton">
+            Confirm
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+<div class="ui small modal" id="OrderDetailsModal">
+    <div class="header">
+        Order details
+    </div>
+    <div class="content">
+        <div class="ui header">
+            Client
+        </div>
+            <div class="ui segment">
+                <div class="ui form">
+                    <div class="three fields">
+                        <div class="field">
+                            <label>Name</label>
+                            <input readonly type="text" placeholder="Loading" id="NameField">
+                        </div>
+                        <div class="field">
+                            <label>Email</label>
+                            <input readonly type="text" placeholder="Loading" id="UsernameField">
+                        </div>
+                        <div class="field">
+                            <label>Phone</label>
+                            <input readonly type="text" placeholder="Loading" id="RoleField">
+                        </div>
+                        <div class="field">
+                            <label>Creation date</label>
+                            <input readonly type="text" placeholder="Loading" id="CreatedField">
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        <div class="ui divider"></div>
+        <div class="ui header">
+            Products
+        </div>
+        <div class="ui segment">
         </div>
     </div>
 </div>

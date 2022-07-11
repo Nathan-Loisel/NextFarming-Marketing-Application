@@ -233,5 +233,77 @@ router.post('/list', (req, res) => {
     OrderController.ListOrders(req, res);
 });
 
+router.post('/get', (req, res) => {
+    if(req.session == undefined || req.session.Agent == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You are not logged in"
+        });
+        return;
+    }
+
+    if(req.body == undefined) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid body"
+        });
+        return;
+    }
+
+    if(req.body.OrderID == undefined) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid order"
+        });
+        return;
+    }
+
+    OrderController.GetOrder(req, res);
+}
+);
+
+router.post('/changestatus', (req, res) => {
+    if(req.session == undefined || req.session.Agent == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You are not logged in"
+        });
+        return;
+    }
+
+    if(req.body == undefined) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid body"
+        });
+        return;
+    }
+
+    if(req.body.OrderID == undefined) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid order"
+        });
+        return;
+    }
+
+    if(req.body.Status == undefined || (req.body.Status != 0 && req.body.Status != 1 && req.body.Status != 2 && req.body.Status != 3)) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid status"
+        });
+        return;
+    }
+
+    OrderController.ChangeStatus(req, res);
+}
+);
 
 module.exports = router;

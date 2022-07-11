@@ -155,3 +155,15 @@ function SetActiveTab(tab){
      $('#' + tab).addClass('active');
   }
 }
+
+function HandleError(error){
+  if(error.response != null && error.response.data != null){
+      if(error.response.data.message == undefined){
+          ShowNotif("Server Error", 'red');
+      };
+      ShowNotif(error.response.data.message, 'red');
+  }
+  else{
+      ShowNotif("Server Error", 'red');
+  }
+}
