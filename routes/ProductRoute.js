@@ -1,5 +1,23 @@
-var ProductController = require('../controllers/ProductController');
+
+const multer = require('multer');
 const express = require('express');
+const path = require('path');
+
+// multer init (max file size, original file extension, rnadom file name)
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './media/');
+    }
+    , filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+}
+);
+const upload = multer({ storage: storage });
+
+
+var ProductController = require('../controllers/ProductController');
+
 
 const router = express.Router();
 
@@ -412,5 +430,59 @@ router.post('/options/list', (req, res) => {
     ProductController.GetProductOptions(req, res);
     return;
 });
+
+router.post('/images/add', upload.single('profile-file'), (req, res) => {
+
+
+    // if(req.session == undefined || req.session.Agent == undefined){
+    //     res.status(400);
+    //     res.send({
+    //         success: false,
+    //         message: "You are not logged in"
+    //     });
+    //     return;
+    // }
+
+    // if(req.session.Agent.Role < 2){
+    //     res.status(400);
+    //     res.send({
+    //         success: false,
+    //         message: "You don't have the required permission"
+    //     });
+    //     return;
+    // }
+
+    // if(req.body == undefined) {
+    //     res.status(400);
+    //     res.send({
+    //         success: false,
+    //         message: "Invalid body"
+    //     });
+    //     return;
+    // }
+
+    // if(req.body.ProductID == undefined){
+    //     res.status(400);
+    //     res.send({
+    //         success: false,
+    //         message: "Invalid product"
+    //     });
+    //     return;
+    // }
+
+    // Get juploaded file
+    let file = req.file;
+    console.log(file);
+
+    res.status(200);
+    res.send({
+        success: true,
+        message: "Image uploaded"
+    });
+
+    return;
+}
+);
+
 
 module.exports = router;

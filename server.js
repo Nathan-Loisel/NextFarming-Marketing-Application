@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 var bodyParser = require('body-parser');
 
+
 const app = express();
 app.use(bodyParser.json());
 app.use(session({
@@ -43,6 +44,8 @@ app.use('/', ContentRoutes);
 app.use('/css', express.static(__dirname + '/public/css'));
 app.use('/js', express.static(__dirname + '/public/js'));
 app.use('/assets', express.static(__dirname + '/public/assets'));
+
+app.use('/media', express.static(__dirname + '/media'));
 
 
 app.listen(80, () => {

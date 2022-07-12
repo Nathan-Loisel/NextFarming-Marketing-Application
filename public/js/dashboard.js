@@ -1,5 +1,5 @@
 
-const api = axios.create({baseURL: 'http://localhost'})
+const api = axios.create({baseURL: 'http://129.151.229.222'})
 
 $(document)
 .ready(function() {
