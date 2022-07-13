@@ -86,6 +86,24 @@
         <button class="ui red button" id="DeleteProductButton" style="padding-right: 40px;padding-left: 40px;">Delete</button>
     </div>
     <div class="ui raised segment" style="margin: 20px;">
+        <div class="ui form">
+            <div class="fields">
+                <div class="field">
+                    <h1>Images</h1>
+                    <div  id="ManageProductImages">
+                        <div class="ui placeholder">
+                            <div class="line"></div>
+                            <div class="line"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <button class="ui green button" id="ManageProductAddImageButton">Add Images</button>
+        </div>
+    </div>
+    <div class="ui raised segment" style="margin: 20px;">
         <h1 class="ui header">
             <i class="box icon"></i>
             <div class="content">
@@ -273,5 +291,23 @@
     </div>
     <div class="actions">
         <div class="ui green button" id="EditOptionConfirmButton">Edit</div>
+    </div>
+</div>
+
+<div class="ui mini modal" id="ManageProductAddImageModal">
+    <i class="close icon"></i>
+    <div class="header">Add Product Image</div>
+    <div class="content">
+        <div class="ui form">
+            <div class="fields" style="display: flex; flex-direction: column;">
+                <div class="field">
+                    <label>Load Images</label>
+                    <input accept="image/*" type="file" name="images" id="AddProductImagesField" required multiple>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui green button" id="AddProductImageConfirmButton">Add</div>
     </div>
 </div>

@@ -1,5 +1,6 @@
 const uuid = require('uuid');
 var Database = require('../Database');
+const fs = require('fs');
 
 exports.CreateProduct = (req, res) => {
 
@@ -8,7 +9,7 @@ exports.CreateProduct = (req, res) => {
         Title: req.body.Title,
         ShortDescription: null,
         LongDescription: null,
-        ImageURL: null,
+        Images: [],
         Price: req.body.Price,
         Options: null,
         Available: true
@@ -20,10 +21,6 @@ exports.CreateProduct = (req, res) => {
 
     if(req.body.LongDescription != undefined) {
         Product.LongDescription = req.body.LongDescription;
-    }
-
-    if(req.body.ImageURL != undefined) {
-        Product.ImageURL = req.body.ImageURL;
     }
 
     if(req.body.Available != undefined) {
@@ -490,3 +487,313 @@ exports.GetProductOptions = (req, res) => {
     );
 }
 
+exports.AddMultipleImages = (req, res) => {
+    var ProductID = req.body.ProductID;
+    Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
+        if (err) {
+            for(var i = 0; i < req.files.length; i++) {
+                fs.unlink((req.files[i].destination + req.files[i].filename), (err) => {
+                    if(err) {
+                        console.log(err);
+                    }
+                }
+                );
+            }
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+        else {
+            if (product == null) {
+                for(var i = 0; i < req.files.length; i++) {
+                    fs.unlink((req.files[i].destination + req.files[i].filename), (err) => {
+                        if(err) {
+                            console.log(err);
+                        }
+                    }
+                    );
+                }
+                res.status(400);
+                res.send({
+                    success: false,
+                    message: "Can't find product"
+                });
+                return;
+            }
+            else {
+                for(var i = 0; i < req.body.Images.length; i++) {
+                    // split with last slash
+                    var split = req.body.Images[i].split("/");
+                    var filename = split[split.length - 1];
+                    product.Images.push(filename);
+                }
+                Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
+                    if (err) {
+                        for(var i = 0; i < req.files.length; i++) {
+                            fs.unlink((req.files[i].destination + req.files[i].filename), (err) => {
+                                if(err) {
+                                    console.log(err);
+                                }
+                            }
+                            );
+                        }
+                        res.status(400);
+                        res.send({
+                            success: false,
+                            message: "Database error"
+                        });
+                        return;
+                    }
+                    else {
+                        res.send({
+                            success: true,
+                            data: product
+                        });
+                    }
+                }
+                );
+            }
+        }
+    }
+    );
+}
+
+exports.ChangeMainImage = (req, res) => {
+    var Image = req.body.Image;
+    var ProductID = req.body.ProductID;
+    Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
+        if (err) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+        else {
+            if (product == null) {
+                res.status(400);
+                res.send({
+                    success: false,
+                    message: "Can't find product"
+                });
+                return;
+            }
+            else {
+                if (product.Images.indexOf(Image) == -1) {
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Image not found"
+                    });
+                    return;
+                }
+                else {
+                    product.Images.splice(0, 0, product.Images.splice(product.Images.indexOf(Image), 1)[0]);
+                }
+
+
+                Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
+                    if (err) {
+                        res.status(400);
+                        res.send({
+                            success: false,
+                            message: "Database error"
+                        });
+                        return;
+                    }
+                    else {
+                        res.send({
+                            success: true,
+                            data: product
+                        });
+                    }
+                }
+                );
+            }
+        }
+    }
+    );
+}
+
+exports.DeleteImage = (req, res) => {
+    var Image = req.body.Image;
+    var ProductID = req.body.ProductID;
+    Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
+        if (err) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+        else {
+            if (product == null) {
+                res.status(400);
+                res.send({
+                    success: false,
+                    message: "Can't find product"
+                });
+                return;
+            }
+            else {
+                if (product.Images.indexOf(Image) == -1) {
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Image not found"
+                    });
+                    return;
+                }
+                else {
+                    product.Images.splice(product.Images.indexOf(Image), 1);
+                    file = './media/' + req.body.Image;
+                    fs.unlink(file, (err) => {
+                        if(err) {
+                            console.log(err);
+                        }
+                    }
+                    );
+                }
+
+                Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
+                    if (err) {
+                        res.status(400);
+                        res.send({
+                            success: false,
+                            message: "Database error"
+                        });
+                        return;
+                    }
+                    else {
+                        res.send({
+                            success: true,
+                            data: product
+                        });
+                    }
+                }
+                );
+            }
+        }
+    }
+    );
+}
+
+
+exports.PushImage = (req, res) => {
+    var Image = req.body.Image;
+    var ProductID = req.body.ProductID;
+    Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
+        if (err) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+        else {
+            if (product == null) {
+                res.status(400);
+                res.send({
+                    success: false,
+                    message: "Can't find product"
+                });
+                return;
+            }
+            else {
+                if (product.Images.indexOf(Image) == -1) {
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Image not found"
+                    });
+                    return;
+                }
+                else {
+                    var index = product.Images.indexOf(Image);
+                    product.Images.splice(index, 0, product.Images.splice(index + 1, 1)[0]);
+                }
+                Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
+                    if (err) {
+                        res.status(400);
+                        res.send({
+                            success: false,
+                            message: "Database error"
+                        });
+                        return;
+                    }
+                    else {
+                        res.send({
+                            success: true,
+                            data: product
+                        });
+                    }
+                }
+                );
+            }
+        }
+    }
+    );
+}
+
+exports.PullImage = (req, res) => {
+    var Image = req.body.Image;
+    var ProductID = req.body.ProductID;
+    Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
+        if (err) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+        else {
+            if (product == null) {
+                res.status(400);
+                res.send({
+                    success: false,
+                    message: "Can't find product"
+                });
+                return;
+            }
+            else {
+                if (product.Images.indexOf(Image) == -1) {
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Image not found"
+                    });
+                    return;
+                }
+                else {
+                    var index = product.Images.indexOf(Image);
+                    product.Images.splice(index - 1, 0, product.Images.splice(index, 1)[0]);
+                }
+                Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
+                    if (err) {
+                        res.status(400);
+                        res.send({
+                            success: false,
+                            message: "Database error"
+                        });
+                        return;
+                    }
+                    else {
+                        res.send({
+                            success: true,
+                            data: product
+                        });
+                    }
+                }
+                );
+            }
+        }
+    }
+    );
+}

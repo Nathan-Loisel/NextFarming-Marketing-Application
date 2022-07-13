@@ -1,5 +1,6 @@
 
-const api = axios.create({baseURL: 'http://129.151.229.222'})
+const url = 'http://129.151.229.222';
+const api = axios.create({baseURL: url})
 
 $(document)
 .ready(function() {
