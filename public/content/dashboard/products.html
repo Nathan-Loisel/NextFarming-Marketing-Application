@@ -264,28 +264,48 @@
     </div>
 </div>
 
-<div class="ui mini modal" id="EditOptionModal">
+<div class="ui modal" id="EditOptionModal">
     <i class="close icon"></i>
     <div class="header">Edit Option</div>
     <div class="content">
-        <div class="ui form">
-            <div class="fields" style="display: flex; flex-direction: column;">
-                <div class="field">
-                    <label>Title</label>
-                    <input type="text" placeholder="Title" id="EditOptionTitleField">
+        <div class="ui raised segment">
+            <div class="ui form">
+                <div class="fields" style="display: flex; flex-direction: column;">
+                    <div class="field">
+                        <label>Title</label>
+                        <input type="text" placeholder="Title" id="EditOptionTitleField">
+                    </div>
+                    <div class="field">
+                        <label>Description</label>
+                        <input type="text" placeholder="Description" id="EditOptionDescriptionField">
+                    </div>
+                    <div class="field">
+                        <label>Image</label>
+                        <input type="text" placeholder="Image" id="EditOptionImageField">
+                    </div>
+                    <div class="field">
+                        <label>Price</label>
+                        <input type="number" min=0 placeholder="Price" id="EditOptionPriceField">
+                    </div>
                 </div>
-                <div class="field">
-                    <label>Description</label>
-                    <input type="text" placeholder="Description" id="EditOptionDescriptionField">
+             </div>  
+        </div>  
+        <div class="ui raised segment" style="margin: 20px;">
+            <div class="ui form">
+                <div class="fields">
+                    <div class="field">
+                        <h1>Images</h1>
+                        <div  id="EditOptionImages">
+                            <div class="ui placeholder">
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="field">
-                    <label>Image</label>
-                    <input type="text" placeholder="Image" id="EditOptionImageField">
-                </div>
-                <div class="field">
-                    <label>Price</label>
-                    <input type="number" min=0 placeholder="Price" id="EditOptionPriceField">
-                </div>
+            </div>
+            <div class="field">
+                <button class="ui green button" id="EditOptionAddImageButton">Add Images</button>
             </div>
         </div>
     </div>
@@ -309,5 +329,24 @@
     </div>
     <div class="actions">
         <div class="ui green button" id="AddProductImageConfirmButton">Add</div>
+    </div>
+</div>
+
+
+<div class="ui mini modal" id="EditOptionAddImageModal">
+    <i class="close icon"></i>
+    <div class="header">Add Option Image</div>
+    <div class="content">
+        <div class="ui form">
+            <div class="fields" style="display: flex; flex-direction: column;">
+                <div class="field">
+                    <label>Load Images</label>
+                    <input accept="image/*" type="file" name="images" id="AddOptionImagesField" required multiple>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui green button" id="AddOptionImageConfirmButton">Add</div>
     </div>
 </div>

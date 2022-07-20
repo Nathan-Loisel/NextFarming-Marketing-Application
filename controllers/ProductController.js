@@ -487,7 +487,7 @@ exports.GetProductOptions = (req, res) => {
     );
 }
 
-exports.AddMultipleImages = (req, res) => {
+exports.AddProductImages = (req, res) => {
     var ProductID = req.body.ProductID;
     Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
         if (err) {
@@ -525,7 +525,6 @@ exports.AddMultipleImages = (req, res) => {
             }
             else {
                 for(var i = 0; i < req.body.Images.length; i++) {
-                    // split with last slash
                     var split = req.body.Images[i].split("/");
                     var filename = split[split.length - 1];
                     product.Images.push(filename);
@@ -561,7 +560,7 @@ exports.AddMultipleImages = (req, res) => {
     );
 }
 
-exports.ChangeMainImage = (req, res) => {
+exports.ChangeProductMainImage = (req, res) => {
     var Image = req.body.Image;
     var ProductID = req.body.ProductID;
     Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
@@ -619,7 +618,7 @@ exports.ChangeMainImage = (req, res) => {
     );
 }
 
-exports.DeleteImage = (req, res) => {
+exports.DeleteProductImage = (req, res) => {
     var Image = req.body.Image;
     var ProductID = req.body.ProductID;
     Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
@@ -683,8 +682,7 @@ exports.DeleteImage = (req, res) => {
     );
 }
 
-
-exports.PushImage = (req, res) => {
+exports.PushProductImage = (req, res) => {
     var Image = req.body.Image;
     var ProductID = req.body.ProductID;
     Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
@@ -741,7 +739,7 @@ exports.PushImage = (req, res) => {
     );
 }
 
-exports.PullImage = (req, res) => {
+exports.PullProductImage = (req, res) => {
     var Image = req.body.Image;
     var ProductID = req.body.ProductID;
     Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
@@ -797,3 +795,352 @@ exports.PullImage = (req, res) => {
     }
     );
 }
+
+exports.AddOptionImages = (req, res) => {
+    var Image = req.body.Image;
+    var ProductID = req.body.ProductID;
+    var OptionID = req.body.OptionID;
+    Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
+        if (err) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+        else {
+            if (product == null) {
+                res.status(400);
+                res.send({
+                    success: false,
+                    message: "Can't find product"
+                });
+                return;
+            }
+            else {
+                if (product.Options.find(x => x.ID == OptionID) == null) {
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Option not found"
+                    });
+                    return;
+                }
+                else {
+                    var option = product.Options.find(x => x.ID == OptionID);
+                    for(var i = 0; i < req.body.Images.length; i++) {
+                        var split = req.body.Images[i].split("/");
+                        var filename = split[split.length - 1];
+                        option.Images.push(filename);
+                    }
+                    Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
+                        if (err) {
+                            res.status(400);
+                            res.send({
+                                success: false,
+                                message: "Database error"
+                            });
+                            return;
+                        }
+                        else {
+                            res.send({
+                                success: true,
+                                data: product
+                            });
+                        }
+                    }
+                    );
+                }
+            }
+        }
+    }
+    );
+}
+
+exports.ChangeOptionMainImage = (req, res) => {
+    var Image = req.body.Image;
+    var ProductID = req.body.ProductID;
+    var OptionID = req.body.OptionID;
+    Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
+        if (err) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+        else {
+            if (product == null) {
+                res.status(400);
+                res.send({
+                    success: false,
+                    message: "Can't find product"
+                });
+                return;
+            }
+            else {
+                if (product.Options.indexOf(OptionID) == -1) {
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Option not found"
+                    });
+                    return;
+                }
+                else {
+                    var option = product.Options.find(x => x.ID == OptionID);
+                    if (option.Images.indexOf(Image) == -1) {
+                        res.status(400);
+                        res.send({
+                            success: false,
+                            message: "Image not found"
+                        });
+                        return;
+                    }
+                    else {
+                        option.Images.splice(0, 0, option.Images.splice(option.Images.indexOf(Image), 1)[0]);
+                    }
+                    Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
+                        if (err) {
+                            res.status(400);
+                            res.send({
+                                success: false,
+                                message: "Database error"
+                            });
+                            return;
+                        }
+                        else {
+                            res.send({
+                                success: true,
+                                data: product
+                            });
+                        }
+                    }
+                    );
+                }
+            }
+        }
+    }
+    );
+}
+
+exports.DeleteOptionImage = (req, res) => {
+    var Image = req.body.Image;
+    var ProductID = req.body.ProductID;
+    var OptionID = req.body.OptionID;
+    Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
+        if (err) {  
+            res.status(400);
+            res.send({ 
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+        else {
+            if (product == null) {
+                res.status(400);
+                res.send({
+                    success: false,
+                    message: "Can't find product"
+                });
+                return;
+            }
+            else {
+                if (product.Options.indexOf(OptionID) == -1) {
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Option not found"
+                    });
+                    return;
+                }
+                else {
+                    var option = product.Options.find(x => x.ID == OptionID);
+                    if (option.Images.indexOf(Image) == -1) {
+                        res.status(400);
+                        res.send({
+                            success: false,
+                            message: "Image not found"
+                        });
+                        return;
+                    }
+                    else {
+                        option.Images.splice(option.Images.indexOf(Image), 1);
+                        file = './media/' + Image;
+                        fs.unlink(file, function (err) {
+                            if (err) {
+                                res.status(400);
+                                res.send({
+                                    success: false,
+                                    message: "Image not found"
+                                });
+                                return;
+                            }
+                        }
+                        );
+                    }
+                    Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
+                        if (err) {
+                            res.status(400);
+                            res.send({
+                                success: false,
+                                message: "Database error"
+                            });
+                            return;
+                        }
+                        else {
+                            res.send({
+                                success: true,
+                                data: product
+                            });
+                        }
+                    }
+                    );
+                }
+            }
+        }
+    }
+    );
+}
+
+exports.PushOptionImage = (req, res) => {
+    var Image = req.body.Image;
+    var ProductID = req.body.ProductID;
+    var OptionID = req.body.OptionID;
+    Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
+        if (err) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+        else {
+            if (product == null) {
+                res.status(400);
+                res.send({
+                    success: false,
+                    message: "Can't find product"
+                });
+                return;
+            }
+            else {
+                if (product.Options.indexOf(OptionID) == -1) {
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Option not found"
+                    });
+                    return;
+                }
+                else {
+                    var option = product.Options.find(x => x.ID == OptionID);
+                    if (option.Images.indexOf(Image) == -1) {
+                        res.status(400);
+                        res.send({
+                            success: false,
+                            message: "Image not found"
+                        });
+                        return;
+                    }
+                    else {
+                        var index = option.Images.indexOf(Image);
+                        option.Images.splice(index + 1, 0, Image);
+                    }
+                    Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
+                        if (err) {
+                            res.status(400);
+                            res.send({
+                                success: false,
+                                message: "Database error"
+                            });
+                            return;
+                        }
+                        else {
+                            res.send({
+                                success: true,
+                                data: product
+                            });
+                        }
+                    }
+                    );
+                }
+            }
+        }
+    }
+    );
+}
+
+exports.PullOptionImage = (req, res) => {
+    var Image = req.body.Image;
+    var ProductID = req.body.ProductID;
+    var OptionID = req.body.OptionID;
+    Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
+        if (err) {
+            res.status(400);
+            res.send({
+                success: false,
+                message: "Database error"
+            });
+            return;
+        }
+        else {
+            if (product == null) {
+                res.status(400);
+                res.send({
+                    success: false,
+                    message: "Can't find product"
+                });
+                return;
+            }
+            else {
+                if (product.Options.indexOf(OptionID) == -1) {
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Option not found"
+                    });
+                    return;
+                }
+                else {
+                    var option = product.Options.find(x => x.ID == OptionID);
+                    if (option.Images.indexOf(Image) == -1) {
+                        res.status(400);
+                        res.send({
+                            success: false,
+                            message: "Image not found"
+                        });
+                        return;
+                    }
+                    else {
+                        option.Images.splice(option.Images.indexOf(Image), 1);
+                    }
+                    Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
+                        if (err) {
+                            res.status(400);
+                            res.send({
+                                success: false,
+                                message: "Database error"
+                            });
+                            return;
+                        }
+                        else {
+                            res.send({
+                                success: true,
+                                data: product
+                            });
+                        }
+                    }
+                    );
+                }
+            }
+        }
+    }
+    );
+}
+
+exports.Delete

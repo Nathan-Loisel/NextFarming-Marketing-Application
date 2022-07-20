@@ -1,7 +1,5 @@
+
 <script src="js/dashboard/orders.js"></script>
-
-
-
 <div class="ui container">
     <div class="ui  segment ">
         <h1 class="ui header">
@@ -17,11 +15,10 @@
     </div>
     <div class="ui segment">
 
-        <!-- Tab initialisation -->
         <div class="ui top attached tabular menu">
-            <a class="active item" data-tab="completed">
+            <a class="active item" data-tab="confirmed">
                 <i class="check icon"></i>
-                Completed
+                Confirmed
             </a>
             <a class="item" data-tab="pending">
                 <i class="clock icon"></i>
@@ -34,9 +31,7 @@
             </a>
         </div>
 
-
-        <!-- Completed orders -->
-        <div class="ui bottom attached tab segment active" data-tab="completed">
+        <div class="ui bottom attached tab segment active" data-tab="confirmed">
             <div class="ui form">
                 <table class="ui celled table">
                     <thead>
@@ -62,7 +57,7 @@
             </div>
         </div>
 
-          
+        
         <!-- Pending orders -->
         <div class="ui bottom attached tab segment" data-tab="pending">
             <div class="ui form">
@@ -90,7 +85,7 @@
             </div>
         </div>
 
-          
+        
         <!-- Archived orders -->
         <div class="ui bottom attached tab segment" data-tab="archived">
             <div class="ui form">
@@ -465,7 +460,7 @@
                             </div>
                         </div>
                     </div>
-                  </div>
+                </div>
             </div>
 
 
@@ -475,27 +470,7 @@
             </div>
             <div class="ui segment">
                 <div class="ui middle aligned divided list" id="SelectedProductsList">
-                    <div class="item">
-                        <div class="right floated content">
-                            <button class="ui icon compact blue button popupButton" data-content="Options">
-                                <i class="box icon"></i>
-                            </button>
-                            <div class="ui mini input">
-                                <input type="number" min="1" value="1" id="amount">
-                            </div>
-                            <button class="ui icon compact red button popupButton" data-content="Remove product">
-                                <i class="minus icon"></i>
-                            </button>
-                        </div>
-                        <img class="ui avatar image" src="/images/avatar2/small/lena.png">
-                        <div class="content">
-                            <span style="margin-right: 10px;" class="popupButton" data-content="Description of the product">Title</span>
-                            <div class="ui label">
-                                23€
-                            </div>
-                        </div>
-                    </div>
-                  </div>
+                </div>
             </div>
 
         </div>
@@ -529,34 +504,34 @@
     </div>
 </div>
 
-<div class="ui small modal" id="NewOrderAddOptionsModal">
+<div class="ui small modal" id="EditOrderAddOptionsModal">
     <div class="header">
         Add options
     </div>
     <div class="content">
         <div class="ui segment">
-        <div class="ui middle aligned divided list" id="NewOrderAddOptionsList">
-          </div>
+        <div class="ui middle aligned divided list" id="EditOrderAddOptionsList">
+        </div>
         </div>
     </div>
     <div class="actions">
         <div class="ui black deny button">
             Cancel
         </div>
-        <div class="ui positive right labeled icon button" id="NewOrderAddOptionsConfirmButton">
+        <div class="ui positive right labeled icon button" id="EditOrderAddOptionsConfirmButton">
             Confirm
             <i class="checkmark icon"></i>
         </div>
     </div>
 </div>
 
-<div class="ui small modal" id="NewOrderSelectedProductCheckOptionsModal">
+<div class="ui small modal" id="EditOrderSelectedProductCheckOptionsModal">
     <div class="header">
         Check options
     </div>
     <div class="content">
         <div class="ui segment">
-            <div class="ui middle aligned divided list" id="NewOrderSelectedProductCheckOptionsList">
+            <div class="ui middle aligned divided list" id="EditOrderSelectedProductCheckOptionsList">
                 No options selected
             </div>
         </div>
@@ -565,7 +540,7 @@
         <div class="ui black deny button">
             Cancel
         </div>
-        <div class="ui positive right labeled icon button" id="NewOrderSelectedProductCheckOptionsConfirmButton">
+        <div class="ui positive right labeled icon button" id="EditOrderSelectedProductCheckOptionsConfirmButton">
             Confirm
             <i class="checkmark icon"></i>
         </div>
@@ -584,7 +559,7 @@
                 <div class="default text">Select a status</div>
                 <div class="menu">
                     <div class="item" data-value="0">Pending</div>
-                    <div class="item" data-value="1">Completed</div>
+                    <div class="item" data-value="1">Confirmed</div>
                     <div class="item" data-value="2">Archived</div>
                     <div class="item" data-value="3">Deleted</div>
                 </div>
@@ -608,26 +583,26 @@
     </div>
     <div class="content">
         <div class="ui header">
-            Client
+            Customer
         </div>
             <div class="ui segment">
                 <div class="ui form">
                     <div class="three fields">
                         <div class="field">
                             <label>Name</label>
-                            <input readonly type="text" placeholder="Loading" id="NameField">
+                            <input readonly type="text" placeholder="Loading" id="OrderDetailsNameField">
                         </div>
                         <div class="field">
                             <label>Email</label>
-                            <input readonly type="text" placeholder="Loading" id="UsernameField">
+                            <input readonly type="text" placeholder="Loading" id="OrderDetailsEmailField">
                         </div>
                         <div class="field">
                             <label>Phone</label>
-                            <input readonly type="text" placeholder="Loading" id="RoleField">
+                            <input readonly type="text" placeholder="Loading" id="OrderDetailsPhoneField">
                         </div>
                         <div class="field">
-                            <label>Creation date</label>
-                            <input readonly type="text" placeholder="Loading" id="CreatedField">
+                            <label>Country</label>
+                            <input readonly type="text" placeholder="Loading" id="OrderDetailsCountryField">
                         </div>
                     </div>
                 </div>
@@ -637,6 +612,9 @@
             Products
         </div>
         <div class="ui segment">
+            <div class="ui middle aligned divided list" id="OrderDetailsProductsList">
+                
+            </div>
         </div>
     </div>
 </div>

@@ -16,18 +16,15 @@ const OrderSchema = new Mongoose.Schema({
     AgentID: String,
     Products: [{
         ID: String,
-        Ammount: Number,
         Product: Object,
-        SelectedOptions: [{
-            OptionID: String
-        }],
+        Amount: Number,
+        SelectedOptions: [String],
     }],
     Price: Number,
     Status: Number,
-    Dates: {
-        Created: Date,
-        Updated: Date
-    }
+    CustomerComment: String,
+    ProductComments: String,
+    Dates: Object
 }, { collection: 'Orders' });
 
 

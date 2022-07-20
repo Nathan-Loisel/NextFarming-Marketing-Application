@@ -1,5 +1,5 @@
 
-const url = 'http://129.151.229.222';
+const url = 'http://localhost';
 const api = axios.create({baseURL: url})
 
 $(document)
@@ -158,6 +158,8 @@ function SetActiveTab(tab){
 }
 
 function HandleError(error){
+  console.log("Error detected");
+  console.log(error);
   if(error.response != null && error.response.data != null){
       if(error.response.data.message == undefined){
           ShowNotif("Server Error", 'red');

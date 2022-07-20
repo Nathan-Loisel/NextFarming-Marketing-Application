@@ -1,4 +1,3 @@
-
 const multer = require('multer');
 const express = require('express');
 const path = require('path');
@@ -6,7 +5,6 @@ const fs = require('fs');
 const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
 
-// multer init (max file size, original file extension, rnadom file name)
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './temp');
@@ -435,7 +433,7 @@ router.post('/options/list', (req, res) => {
     return;
 });
 
-router.post('/images/multiple', upload.array('images', 12), async (req, res) => {
+router.post('/images', upload.array('images', 12), async (req, res) => {
     req.body.Images = [];
     for(let i = 0; i < req.files.length; i++){
         let file = req.files[i];
@@ -520,7 +518,7 @@ router.post('/images/multiple', upload.array('images', 12), async (req, res) => 
         return;
     }
 
-    ProductController.AddMultipleImages(req, res);
+    ProductController.AddProductImages(req, res);
     return;
 }
 );
@@ -571,7 +569,7 @@ router.post('/images/main', (req, res) => {
         return;
     }
 
-    ProductController.ChangeMainImage(req, res);
+    ProductController.ChangeProductMainImage(req, res);
     return;
 }
 );
@@ -622,7 +620,7 @@ router.post('/images/delete', (req, res) => {
         return;
     }
 
-    ProductController.DeleteImage(req, res);
+    ProductController.DeleteProductImage(req, res);
     return;
 }
 );
@@ -673,7 +671,7 @@ router.post('/images/push', (req, res) => {
         return;
     }
 
-    ProductController.PushImage(req, res);
+    ProductController.PushProductImage(req, res);
     return;
 }
 );
@@ -724,7 +722,296 @@ router.post('/images/pull', (req, res) => {
         return;
     }
 
-    ProductController.PullImage(req, res);
+    ProductController.PullProductImage(req, res);
+    return;
+}
+);
+
+router.post('/options/images', upload.array('images', 12), async (req, res) => {
+    req.body.Images = [];
+
+    for(let i = 0; i < req.files.length; i++){
+        let file = req.files[i];
+        let path = './temp/' + file.filename;
+        let newPath = './media/' + uuidv4() + ".png";
+        await sharp(path).resize(300, 300).png().toFile(newPath);
+        fs.unlink(path, (err) => {
+            if(err) {
+                console.log(err);
+            }
+        }
+        );
+        req.body.Images.push(newPath);
+    }
+
+
+    if(req.session == undefined || req.session.Agent == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You are not logged in"
+        });
+        return;
+    }
+
+    if(req.session.Agent.Role < 2){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You don't have the required permission"
+        });
+        return;
+    }
+
+    if(req.body == undefined) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid body"
+        });
+        return;
+    }
+
+    if(req.body.ProductID == undefined){
+        for(var i = 0; i < req.files.length; i++){
+            fs.unlink((req.files[i].destination + req.files[i].filename), (err) => {
+                if(err) {
+                    console.log(err);
+                }
+            }
+            );
+        }
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid product"
+        });
+        return;
+    }
+
+    if(req.body.OptionID == undefined){
+        for(var i = 0; i < req.files.length; i++){
+            fs.unlink((req.files[i].destination + req.files[i].filename), (err) => {
+                if(err) {
+                    console.log(err);
+                }
+            }
+            );
+        }
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid option"
+        });
+        return;
+    }
+
+
+    ProductController.AddOptionImages(req, res);
+    return;
+}
+);
+
+router.post('/options/images/main', (req, res) => {
+    if(req.session == undefined || req.session.Agent == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You are not logged in"
+        });
+        return;
+    }
+
+    if(req.session.Agent.Role < 2){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You don't have the required permission"
+        });
+        return;
+    }
+
+    if(req.body == undefined) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid body"
+        });
+        return;
+    }
+
+    if(req.body.ProductID == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid product"
+        });
+        return;
+    }
+
+    if(req.body.Image == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid image"
+        });
+        return;
+    }
+
+    ProductController.ChangeOptionMainImage(req, res);
+    return;
+}
+);
+
+router.post('/options/images/delete', (req, res) => {
+    if(req.session == undefined || req.session.Agent == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You are not logged in"
+        });
+        return;
+    }
+
+    if(req.session.Agent.Role < 2){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You don't have the required permission"
+        });
+        return;
+    }
+
+    if(req.body == undefined) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid body"
+        });
+        return;
+    }
+
+    if(req.body.ProductID == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid product"
+        });
+        return;
+    }
+
+    if(req.body.Image == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid image"
+        });
+        return;
+    }
+
+    ProductController.DeleteOptionImage(req, res);
+    return;
+}
+);
+
+router.post('/options/images/push', (req, res) => {
+    if(req.session == undefined || req.session.Agent == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You are not logged in"
+        });
+        return;
+    }
+
+    if(req.session.Agent.Role < 2){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You don't have the required permission"
+        });
+        return;
+    }
+
+    if(req.body == undefined) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid body"
+        });
+        return;
+    }
+
+    if(req.body.ProductID == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid product"
+        });
+        return;
+    }
+
+    if(req.body.Image == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid image"
+        });
+        return;
+    }
+
+    ProductController.PushOptionImage(req, res);
+    return;
+}
+);
+
+router.post('/options/images/pull', (req, res) => {
+    if(req.session == undefined || req.session.Agent == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You are not logged in"
+        });
+        return;
+    }
+
+    if(req.session.Agent.Role < 2){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "You don't have the required permission"
+        });
+        return;
+    }
+
+    if(req.body == undefined) {
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid body"
+        });
+        return;
+    }
+
+    if(req.body.ProductID == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid product"
+        });
+        return;
+    }
+
+    if(req.body.Image == undefined){
+        res.status(400);
+        res.send({
+            success: false,
+            message: "Invalid image"
+        });
+        return;
+    }
+
+    ProductController.PullOptionImage(req, res);
     return;
 }
 );

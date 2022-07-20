@@ -1,13 +1,13 @@
 
-var NewOrderSelectedProducts = [];
-var NewOrderCurrentProducts = [];
-var NewOrderSelectedOptions = [];
-var NewOrderCurrentProductID = null;
+var EditOrderSelectedProducts = [];
+var EditOrderCurrentProducts = [];
+var EditOrderSelectedOptions = [];
+var EditOrderCurrentProductID = null;
 var CurrentOrder = null;
-var ActualOrdersTab = null;
+var ActualOrdersTab = 1;
 var CurrentOrderID = null;
 
-// NewOrderSelectedProducts = [
+// EditOrderSelectedProducts = [
 //     {
 //         ID: 1,
 //         Product: {Product}
@@ -20,7 +20,7 @@ $(document).ready(function() {
     $('.tabular.menu .item').tab();
     $('.tabular.menu .item').on('click', function() {
         var tabName = $(this).data('tab');
-        if(tabName == 'completed'){
+        if(tabName == 'confirmed'){
             LoadOrders(1);
             ActualOrdersTab = 1;
         }
@@ -45,25 +45,34 @@ $(document).ready(function() {
     });
 
     $('#EditOrderModal').modal({
-        closable: false
+        closable: false,
+        onApprove: function() {
+            return false;
+        }
     });
 
     $('#NewOrderButton').click(function() {
-        NewOrderLoadProducts();
         CurrentOrderID = null;
+        ResetEditOrderModal();
+        EditOrderLoadProducts();
         $('#EditOrderModal').modal('show');
     }
     );
 
     $('#EditOrderConfirmButton').click(function() {
+        if($('#EditOrderFirstNameField').val() == '' || $('#EditOrderLastNameField').val() == '' || $('#EditOrderEmailField').val() == '' || EditOrderSelectedProducts.length == 0){
+            ShowNotif('Please fill all fields', 'red');
+            return;
+        }
+
         EditOrder();
     }
     );
 
-    $('#NewOrderAddOptionsConfirmButton').click(function() {
-        var Product = NewOrderCurrentProducts.find(function(Product) { return Product.ID == NewOrderCurrentProductID; });
-        Product.SelectedOptions = NewOrderSelectedOptions;
-        NewOrderRefreshProductsTable();
+    $('#EditOrderAddOptionsConfirmButton').click(function() {
+        var Product = EditOrderCurrentProducts.find(function(Product) { return Product.ID == EditOrderCurrentProductID; });
+        Product.SelectedOptions = EditOrderSelectedOptions;
+        EditOrderRefreshProductsTable();
     }
     );
 
@@ -75,7 +84,7 @@ $(document).ready(function() {
 }
 );
 
-function NewOrderLoadProducts(Search, Page){
+function EditOrderLoadProducts(Search, Page){
     if(Page == undefined) {
         Page = 1;
     }
@@ -87,8 +96,8 @@ function NewOrderLoadProducts(Search, Page){
 
     api.post('/product/list', data)
     .then(res => {
-        NewOrderCurrentProducts = res.data.message;
-        NewOrderRefreshProductsTable();
+        EditOrderCurrentProducts = res.data.message;
+        EditOrderRefreshProductsTable();
     }
     )
     .catch(error => {
@@ -106,21 +115,20 @@ function NewOrderLoadProducts(Search, Page){
 
 }
 
-function NewOrderRefreshProductsTable(){
+function EditOrderRefreshProductsTable(){
     $('#ProductsList').html('');
-    NewOrderCurrentProducts.forEach(function(Product) {
-        NewOrderAddProductInList(Product);
+    EditOrderCurrentProducts.forEach(function(Product) {
+        EditOrderAddProductInList(Product);
     }
     );
     $('#SelectedProductsList').html('');
-    NewOrderSelectedProducts.forEach(function(Product) {
-        NewOrderAddProductInSelectedList(Product);
+    EditOrderSelectedProducts.forEach(function(Product) {
+        EditOrderAddProductInSelectedList(Product);
     }
     );
 }
 
-
-function NewOrderAddProductInList(Product){
+function EditOrderAddProductInList(Product){
     var OptionsCountHTML = '';
     if(Product.SelectedOptions != undefined && Product.SelectedOptions.length > 0){
         OptionsCountHTML = '<div class="ui label">' + Product.SelectedOptions.length + '</div>';
@@ -132,14 +140,14 @@ function NewOrderAddProductInList(Product){
             <div class="right floated content">
                 <div class="ui left labeled button" tabindex="0">
                     ${OptionsCountHTML}
-                    <button class="ui icon compact blue button popupButton" data-content="Add options" onclick="NewOrderOptionsModalButton('${Product.ID}')">
+                    <button class="ui icon compact blue button popupButton" data-content="Add options" onclick="EditOrderOptionsModalButton('${Product.ID}')">
                         <i class="box icon"></i>
                     </button>
                 </div>
-                <button class="ui icon compact green button popupButton"  data-content="Add product" onclick="NewOrderAddProductButton('${Product.ID}')">
+                <button class="ui icon compact green button popupButton"  data-content="Add product" onclick="EditOrderAddProductButton('${Product.ID}')">
                     <i class="plus icon"></i>
                 </button>
-                <button class="ui icon compact button popupButton" data-content="Reset product" onclick="NewOrderResetProductButton('${Product.ID}')">
+                <button class="ui icon compact button popupButton" data-content="Reset product" onclick="EditOrderResetProductButton('${Product.ID}')">
                     <i class="redo icon"></i>
                 </button>
             </div>
@@ -155,7 +163,7 @@ function NewOrderAddProductInList(Product){
     $('.popupButton').popup();
 }
 
-function NewOrderAddProductInSelectedList(Product){
+function EditOrderAddProductInSelectedList(Product){
 
     var OptionsCountHTML = '';
     if(Product.SelectedOptions != undefined && Product.SelectedOptions.length > 0){
@@ -165,7 +173,6 @@ function NewOrderAddProductInSelectedList(Product){
     var OptionsDescription = 'No options selected';
     if(Product.SelectedOptions != undefined && Product.SelectedOptions.length > 0){
         OptionsDescription = '';
-        // Option title + new line
         Product.SelectedOptions.forEach(function(OptionID) {
             var Option = Product.Product.Options.find(function(Option) { return Option.ID == OptionID; });
             OptionsDescription += Option.Title + ', ';
@@ -186,13 +193,16 @@ function NewOrderAddProductInSelectedList(Product){
     $('#SelectedProductsList').append(
         `<div class="item">
             <div class="right floated content">
+                <div class="ui input">
+                    <input type="number" value="${Product.Amount}" min="1" max="100">
+                </div>
                 <div class="ui left labeled button" tabindex="0">
                     ${OptionsCountHTML}
-                    <button class="ui icon compact blue button popupButton" data-content="${OptionsDescription}" onclick="NewOrderSelectedProductCheckOptionsButton('${Product.Product.ID}', '${OptionsList}')">
+                    <button class="ui icon compact blue button popupButton" data-content="${OptionsDescription}" onclick="EditOrderSelectedProductCheckOptionsButton('${Product.Product.ID}', '${OptionsList}')">
                         <i class="box icon"></i>
                     </button>
                 </div>
-                <button class="ui icon compact red button popupButton" data-content="Remove product" onclick="NewOrderRemoveProductButton('${Product.Product.ID}', '${OptionsList}')">
+                <button class="ui icon compact red button popupButton" data-content="Remove product" onclick="EditOrderRemoveProductButton('${Product.Product.ID}', '${OptionsList}')">
                     <i class="minus icon"></i>
                 </button>
             </div>
@@ -209,18 +219,18 @@ function NewOrderAddProductInSelectedList(Product){
 
 }
 
-function NewOrderSelectedProductCheckOptionsButton(ProductID, Options){
-    $('#NewOrderSelectedProductCheckOptionsModal').modal('show');
+function EditOrderSelectedProductCheckOptionsButton(ProductID, Options){
+    $('#EditOrderSelectedProductCheckOptionsModal').modal('show');
 
     if(Options != undefined && Options != ''){
         Options = Options.split(',');
-        $('#NewOrderSelectedProductCheckOptionsList').html('');
+        $('#EditOrderSelectedProductCheckOptionsList').html('');
     }
     else{
         Options = [];
     }
 
-    var Product = NewOrderSelectedProducts.find(function(Product) { return Product.Product.ID == ProductID; });
+    var Product = EditOrderSelectedProducts.find(function(Product) { return Product.Product.ID == ProductID; });
 
     var Options = Product.Product.Options.filter(function(Option) {
         return Options.includes(Option.ID);
@@ -229,7 +239,7 @@ function NewOrderSelectedProductCheckOptionsButton(ProductID, Options){
 
 
     Options.forEach(function(Option) {
-        $('#NewOrderSelectedProductCheckOptionsList').append(
+        $('#EditOrderSelectedProductCheckOptionsList').append(
             `<div class="item">
                 <img class="ui avatar image" src="/images/avatar2/small/lena.png">
                 <div class="content">
@@ -244,19 +254,19 @@ function NewOrderSelectedProductCheckOptionsButton(ProductID, Options){
     );
 }
 
-function NewOrderAddProductButton(ProductID){
-    if(NewOrderSelectedProducts == null){
-        NewOrderSelectedProducts = [];
+function EditOrderAddProductButton(ProductID){
+    if(EditOrderSelectedProducts == null){
+        EditOrderSelectedProducts = [];
     }
 
-    var Product = NewOrderCurrentProducts.find(function(Product) { return Product.ID == ProductID; });
+    var Product = EditOrderCurrentProducts.find(function(Product) { return Product.ID == ProductID; });
     
     if(Product.SelectedOptions == undefined || Product.SelectedOptions.length == null){
         Product.SelectedOptions = [];
     }
 
     var AlreadyPresent = false;
-    NewOrderSelectedProducts.forEach(function(SelectedProduct) {
+    EditOrderSelectedProducts.forEach(function(SelectedProduct) {
         if(SelectedProduct.Product.ID == Product.ID){
             if(SelectedProduct.SelectedOptions != undefined && SelectedProduct.SelectedOptions.sort().join(',') == Product.SelectedOptions.sort().join(',')){
                 AlreadyPresent = true;
@@ -267,7 +277,7 @@ function NewOrderAddProductButton(ProductID){
     );
 
     if(!AlreadyPresent){
-        NewOrderSelectedProducts.push({
+        EditOrderSelectedProducts.push({
             ID: Product.ID,
             Product: Product,
             Amount: 1,
@@ -275,33 +285,33 @@ function NewOrderAddProductButton(ProductID){
         });
     }
 
-    NewOrderCurrentProducts.find(function(Product) { return Product.ID == ProductID; }).SelectedOptions = [];
-    NewOrderRefreshProductsTable();
+    EditOrderCurrentProducts.find(function(Product) { return Product.ID == ProductID; }).SelectedOptions = [];
+    EditOrderRefreshProductsTable();
 
 }
 
-function NewOrderOptionsModalButton(ProductID){
-    $('#NewOrderAddOptionsModal').modal('show');
-    NewOrderCurrentProductID = ProductID;
-    NewOrderSelectedOptions = NewOrderCurrentProducts.find(function(Product) { return Product.ID == ProductID; }).SelectedOptions;
+function EditOrderOptionsModalButton(ProductID){
+    $('#EditOrderAddOptionsModal').modal('show');
+    EditOrderCurrentProductID = ProductID;
+    EditOrderSelectedOptions = EditOrderCurrentProducts.find(function(Product) { return Product.ID == ProductID; }).SelectedOptions;
 
-    var Product = NewOrderCurrentProducts.find(function(Product) { return Product.ID == ProductID; });
+    var Product = EditOrderCurrentProducts.find(function(Product) { return Product.ID == ProductID; });
     var Options = Product.Options;
-    $('#NewOrderAddOptionsList').html('');
+    $('#EditOrderAddOptionsList').html('');
     if(Options == null){
-        $('#NewOrderAddOptionsList').html(`<div class="item">No options available</div>`);
+        $('#EditOrderAddOptionsList').html(`<div class="item">No options available</div>`);
         Options = [];
     }
 
     Options.forEach(function(Option) {
         var checked = '';
-        if(NewOrderSelectedOptions != undefined && NewOrderSelectedOptions.indexOf(Option.ID) != -1){
+        if(EditOrderSelectedOptions != undefined && EditOrderSelectedOptions.indexOf(Option.ID) != -1){
             checked = "checked";
         }
 
 
 
-        $('#NewOrderAddOptionsList').append(
+        $('#EditOrderAddOptionsList').append(
             `<div class="item">
                 <div class="right floated content">
                     <div class="ui checkbox">
@@ -325,11 +335,11 @@ function NewOrderOptionsModalButton(ProductID){
         $('.ui.checkbox').checkbox({
             onChecked: function() {
                 var OptionID = $(this).attr('name');
-                NewOrderSelectOption(OptionID);
+                EditOrderSelectOption(OptionID);
             }, 
             onUnchecked: function() {
                 var OptionID = $(this).attr('name');
-                NewOrderUnselectOption(OptionID);
+                EditOrderUnselectOption(OptionID);
             }
         });
 
@@ -338,33 +348,33 @@ function NewOrderOptionsModalButton(ProductID){
     );
 }
 
-function NewOrderResetProductButton(ProductID){
-    var Product = NewOrderCurrentProducts.find(function(Product) { return Product.ID == ProductID; });
+function EditOrderResetProductButton(ProductID){
+    var Product = EditOrderCurrentProducts.find(function(Product) { return Product.ID == ProductID; });
     Product.SelectedOptions = [];
-    NewOrderRefreshProductsTable();
+    EditOrderRefreshProductsTable();
 }
 
-function NewOrderSelectOption(OptionID){
-    if(NewOrderSelectedOptions == null){
-        NewOrderSelectedOptions = [];
+function EditOrderSelectOption(OptionID){
+    if(EditOrderSelectedOptions == null){
+        EditOrderSelectedOptions = [];
     }
 
-    if(NewOrderSelectedOptions.indexOf(OptionID) == -1){
-        NewOrderSelectedOptions.push(OptionID);
-    }
-}
-
-function NewOrderUnselectOption(OptionID){
-    if(NewOrderSelectedOptions == null){
-        NewOrderSelectedOptions = [];
-    }
-
-    if(NewOrderSelectedOptions.indexOf(OptionID) != -1){
-        NewOrderSelectedOptions.splice(NewOrderSelectedOptions.indexOf(OptionID), 1);
+    if(EditOrderSelectedOptions.indexOf(OptionID) == -1){
+        EditOrderSelectedOptions.push(OptionID);
     }
 }
 
-function NewOrderRemoveProductButton(ProductID, Options){
+function EditOrderUnselectOption(OptionID){
+    if(EditOrderSelectedOptions == null){
+        EditOrderSelectedOptions = [];
+    }
+
+    if(EditOrderSelectedOptions.indexOf(OptionID) != -1){
+        EditOrderSelectedOptions.splice(EditOrderSelectedOptions.indexOf(OptionID), 1);
+    }
+}
+
+function EditOrderRemoveProductButton(ProductID, Options){
     if(Options == undefined){
         Options = '';
     }
@@ -372,18 +382,18 @@ function NewOrderRemoveProductButton(ProductID, Options){
         
 
     Options = Options.split(',');
-    NewOrderSelectedProducts.forEach(function(SelectedProduct) {
+    EditOrderSelectedProducts.forEach(function(SelectedProduct) {
         if(SelectedProduct.Product.ID == ProductID){
             if(Options == undefined && SelectedProduct.SelectedOptions == undefined){
-                NewOrderSelectedProducts.splice(NewOrderSelectedProducts.indexOf(SelectedProduct), 1);
+                EditOrderSelectedProducts.splice(EditOrderSelectedProducts.indexOf(SelectedProduct), 1);
             }
             else if(Options != undefined && SelectedProduct.SelectedOptions != undefined && SelectedProduct.SelectedOptions.sort().join(',') == Options.sort().join(',')){
-                NewOrderSelectedProducts.splice(NewOrderSelectedProducts.indexOf(SelectedProduct), 1);
+                EditOrderSelectedProducts.splice(EditOrderSelectedProducts.indexOf(SelectedProduct), 1);
             }
         }
     }
     );
-    NewOrderRefreshProductsTable();
+    EditOrderRefreshProductsTable();
 }
 
 function EditOrder(){
@@ -400,13 +410,13 @@ function EditOrder(){
         Country: $('#EditOrderCountryField').val()
     }
     if(Client.FirstName == undefined || Client.LastName == undefined || Client.Email == undefined){
-        $('#NewOrderClientError').html('Please fill in all client required fields');
+        $('#EditOrderClientError').html('Please fill in all client required fields');
         return;
     }
 
     
 
-    SelectedProducts = NewOrderSelectedProducts;
+    SelectedProducts = EditOrderSelectedProducts;
     var TotalPrice = 0;
     SelectedProducts.forEach(function(SelectedProduct) {
         var Product = SelectedProduct.Product;
@@ -414,7 +424,8 @@ function EditOrder(){
         var Amount = SelectedProduct.Amount;
         var Price = Product.Price;
         if(Options != undefined){
-            Options.forEach(function(Option) {
+            Options.forEach(function(OptionID) {
+                var Option = Product.Options.find(function(Option) { return Option.ID == OptionID; });
                 Price += Option.Price;
             }
             );
@@ -431,11 +442,10 @@ function EditOrder(){
 
 
     if(OrderID == null){
-        console.log("ok");
         axios.post('/order/create', Data)
         .then(function (response) {
             ShowNotif("Order created", "green");
-            $('#NewOrderModal').modal('hide');
+            $('#EditOrderModal').modal('hide');
             LoadOrders(ActualOrdersTab);
         }
         )
@@ -457,7 +467,7 @@ function EditOrder(){
         axios.post('/order/update', Data)
         .then(function (response) {
             ShowNotif("Order updated", "green");
-            $('#NewOrderModal').modal('hide');
+            $('#EditOrderModal').modal('hide');
             LoadOrders(ActualOrdersTab);
         }
         )
@@ -528,6 +538,9 @@ function RefreshPendingOrdersTable(Orders){
                     <button style="padding: 7px; font-size: 14px;" class="ui blue button" onclick="ShowOrderDetailsModal('${Order.ID}')">
                         Details
                     </button>
+                    <button style="padding: 7px; font-size: 14px;" class="ui blue button" onclick="ShowOrderEditModal('${Order.ID}')">
+                        Edit
+                    </button>
                     <button style="padding: 7px; font-size: 14px;" class="ui orange button" onclick="ShowOrderChangeStatusModal('${Order.ID}')">
                         Change status
                     </button>
@@ -583,6 +596,9 @@ function RefreshArchivedOrdersTable(Orders){
                     <button style="padding: 7px; font-size: 14px;" class="ui blue button" onclick="ShowOrderDetailsModal('${Order.ID}')">
                         Details
                     </button>
+                    <button style="padding: 7px; font-size: 14px;" class="ui blue button" onclick="ShowOrderEditModal('${Order.ID}')">
+                        Edit
+                    </button>
                     <button style="padding: 7px; font-size: 14px;" class="ui orange button" onclick="ShowOrderChangeStatusModal('${Order.ID}')">
                         Change status
                     </button>
@@ -608,6 +624,9 @@ function ShowOrderEditModal(OrderID){
         $('#EditOrderPostCodeField').val(CurrentOrder.Client.PostCode);
         $('#EditOrderCityField').val(CurrentOrder.Client.City);
         $('#EditOrderCountryField').val(CurrentOrder.Client.Country);
+
+        EditOrderSelectedProducts = CurrentOrder.Products;
+        EditOrderRefreshProductsTable();
     }
     )
     .catch(function (error) {
@@ -632,6 +651,70 @@ function ShowOrderChangeStatusModal(OrderID){
 function ShowOrderDetailsModal(OrderID){
     $('#OrderDetailsModal').modal('show');
     CurrentOrderID = OrderID;
+
+    // axios get /order/get
+
+    axios.post('/order/get', {OrderID: OrderID})
+    .then(function (response) {
+        CurrentOrder = response.data.message;
+        $('#OrderDetailsNameField').val(CurrentOrder.Client.FirstName + ' ' + CurrentOrder.Client.LastName);
+        $('#OrderDetailsEmailField').val(CurrentOrder.Client.Email);
+        $('#OrderDetailsPhoneField').val(CurrentOrder.Client.Phone);
+        $('#OrderDetailsCountryField').val(CurrentOrder.Client.Country);
+        if(CurrentOrder.Client.Email == ""){
+            $('#OrderDetailsEmailField').val("No email provided");
+        }
+        if(CurrentOrder.Client.Phone == ""){
+            $('#OrderDetailsPhoneField').val("No phone provided");
+        }
+        if(CurrentOrder.Client.Country == ""){
+            $('#OrderDetailsCountryField').val("No country provided");
+        }
+
+        var Products = CurrentOrder.Products;
+
+        $('#OrderDetailsProductsList').html('');
+        Products.forEach(function(Product) {
+            var Amount = Product.Amount;
+            Product = Product.Product;
+            var ImageContent = `<i class="camera icon"></i>`;
+            if(Product.Images != undefined && Product.Images.length > 0){
+                ImageContent = `<img style="max-width: 30px; max-height: 30px" src="${url}/media/${Product.Images[0]}" class="img-fluid">`;
+            }
+            $('#OrderDetailsProductsList').append(
+                `<div class="item">
+                    <div class="right floated content">
+                        <div class="ui mini input">
+                            <input readonly type="number" min="1" value="${Amount}" id="amount">
+                        </div>
+                    </div>
+                    <div class="content">
+                        ${ImageContent}
+                        <span style="margin-right: 10px;" class="popupButton" data-content="${Product.Description}">${Product.Title}</span>
+                        <div class="ui label">
+                            ${Product.Price}€
+                        </div>
+                    </div>
+                </div>`
+            );
+        }
+        );
+
+    }
+    )
+    .catch(function (error) {
+        console.log(error);
+        if(error.response != null && error.response.data != null){
+            if(error.response.data.message == undefined){
+                ShowNotif("Server Error", 'red');
+            };
+            ShowNotif(error.response.data.message, 'red');
+        }
+        else{
+            ShowNotif("Server Error", 'red');
+        }
+    }
+    );
 }
 
 function ChangeOrderStatus(){
@@ -647,6 +730,7 @@ function ChangeOrderStatus(){
     .then(function (response) {
         ShowNotif("Order status successfully changed", 'green');
         $('#ChangeOrderStatusModal').modal('hide');
+        console.log(ActualOrdersTab);
         LoadOrders(ActualOrdersTab);
     }
     )
@@ -654,4 +738,22 @@ function ChangeOrderStatus(){
         HandleError(error);
     }
     );
+}
+
+function ResetEditOrderModal(){
+    EditOrderSelectedOptions = [];
+    EditOrderSelectedProducts = [];
+    EditOrderCurrentProductID = null;
+    EditOrderCurrentProducts = [];
+
+    // FirstName LastName Email Phone Address PostCode City Country
+
+    $('#EditOrderFirstNameField').val("");
+    $('#EditOrderLastNameField').val("");
+    $('#EditOrderEmailField').val("");
+    $('#EditOrderPhoneField').val("");
+    $('#EditOrderAddressField').val("");
+    $('#EditOrderPostCodeField').val("");
+    $('#EditOrderCityField').val("");
+    $('#EditOrderCountryField').val("");
 }

@@ -4,7 +4,8 @@ CheckProductID = (req, res, next) => {
     Products = req.body.Products;
     for(var i = 0; i < Products.length; i++){
         var Product = Products[i];
-        if(Product.ProductID == undefined || Product.Quantity == undefined || !IsInteger(Product.Quantity)){
+        if(Product.ID == undefined || Product.Amount == undefined || !IsInteger(Product.Amount)){
+            console.log(Product);
             res.status(400);
             res.send({
                 success: false,
@@ -37,7 +38,10 @@ CheckProductID = (req, res, next) => {
         }
         );
 
-        //for each option
+        if(Product.Options == undefined){
+            Product.Options = [];
+        }
+
         for(var j = 0; j < Product.Options.length; j++){
             var Option = Product.Options[j];
             if(Option.OptionID == undefined || Option.Quantity == undefined || !IsInteger(Option.Quantity)){

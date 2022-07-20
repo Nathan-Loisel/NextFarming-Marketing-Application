@@ -75,7 +75,6 @@ $(document).ready(function() {
     );
     
     $('#AddOptionConfirmButton').click(function() {
-        //check if title and price are set
         if($('#AddOptionTitleField').val() == "" || $('#AddOptionPriceField').val() == ""){
             ShowNotif("Please fill in all fields", 'red');
             return;
@@ -115,8 +114,18 @@ $(document).ready(function() {
     }
     );
 
+    $('#EditOptionAddImageButton').click(function() {
+        $('#EditOptionAddImageModal').modal('show');
+    }
+    );
+
     $('#AddProductImageConfirmButton').click(function() {
         UploadProductImages();
+    }
+    );
+
+    $('#AddOptionImageConfirmButton').click(function() {
+        UploadOptionImages();
     }
     );
 }
@@ -180,7 +189,7 @@ function RefreshProductsTable() {
 function AddProductToTable(Product) {
     
     var ImageContent = 'No image uploaded';
-    if(Product.Images.length > 0){
+    if(Product.Images != undefined  && Product.Images.length > 0){
         ImageContent = '<img style="max-width: 60px; max-height: 60px" src="' + url + '/media/' + Product.Images[0] + '" class="img-fluid">';
     }
     console.log(ImageContent);
@@ -424,6 +433,57 @@ function OpenEditOptionModal(OptionID) {
     $('#EditOptionDescriptionField').val(Option.Description);
     $('#EditOptionPriceField').val(Option.Price);
     
+    if(Option.Images == undefined){
+        Option.Images = [];
+    }
+    var Images = Option.Images;
+    if(Images.length > 0){
+        var ImagesContent = '<div class="ui small images">';
+        Images.forEach(function(Image, index) {
+            ImagesContent += `
+            <div class="ui fluid image">
+                <div class="ui dimmer">
+                    <div class="content">
+                        <button onclick="PullProductImage('` + Image + `')" class="ui icon mini blue button" style="padding: 7px; font-size: 14px;">
+                            <i class="angle double left icon"></i>
+                        </button>
+                        <button onclick="PushProductImage('` + Image + `')" class="ui icon mini blue button" style="padding: 7px; font-size: 14px;">
+                            <i class="angle double right icon"></i>
+                        </button>
+                        <br/>
+                        <br/>
+                        <button onclick="DeleteProductImage('` + Image + `')" class="ui icon mini red button" style="padding: 7px; font-size: 14px;">
+                            <i class="trash icon"></i>
+                        </button>
+                        <button onclick="MainProductImage('` + Image + `')" class="ui icon mini green button" style="padding: 7px; font-size: 14px;">
+                            <i class="star icon"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            if(index == 0){
+                ImagesContent += `
+                <a class="ui left green corner label">
+                  <i class="star icon"></i>
+                </a>`
+
+            }
+            ImagesContent += `
+            <img class="ui image" src="` + url + '/media/' + Image + `">
+            </div>`;
+        }
+        );
+        ImagesContent += '</div>';
+        $('#EditOptionImages').html(ImagesContent);
+    }
+    else{
+        $('#EditOptionImages').html('No images uploaded');
+    }
+    $('.image')
+    .dimmer({
+        on: 'hover'
+    })
+    ;
 
     $('#EditOptionModal').modal('show');
 }
@@ -494,13 +554,12 @@ function DeleteOption(ProductID, OptionID) {
 function UploadProductImages(){
     ProductID = CurrentProductID;
     var files = $('#AddProductImagesField')[0].files;
-    console.log(files);
     var formData = new FormData();
     for(var i = 0; i < files.length; i++){
         formData.append('images', files[i]);
     }
     formData.append('ProductID', ProductID);
-    api.post('/product/images/multiple', formData, {
+    api.post('/product/images', formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
@@ -509,6 +568,32 @@ function UploadProductImages(){
         ShowNotif("Images successfully uploaded", 'green');
         $('#AddProductImageModal').modal('hide');
         LoadProduct(ProductID);
+    }
+    )
+    .catch(error => {
+        HandleError(error);
+    }
+    );
+}
+
+function UploadOptionImages(){
+    OptionID = CurrentOptionID;
+    var files = $('#AddOptionImagesField')[0].files;
+    var formData = new FormData();
+    for(var i = 0; i < files.length; i++){
+        formData.append('images', files[i]);
+    }
+    formData.append('ProductID', CurrentProductID);
+    formData.append('OptionID', OptionID);
+    api.post('/product/options/images', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+    .then(res => {
+        ShowNotif("Images successfully uploaded", 'green');
+        $('#AddOptionImageModal').modal('hide');
+        LoadOption(OptionID);
     }
     )
     .catch(error => {

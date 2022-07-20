@@ -19,8 +19,13 @@ exports.CreateOrder = (req, res) => {
         Products: req.body.Products,
         Price: req.body.Price,
         Status: 0,
+        CustomerComments: null,
+        AgentComments: null,
         Dates: {
-            0: Date.now()
+            0: Date.now(),
+            1: null,
+            2: null,
+            3: null
         }
     };
 
@@ -51,6 +56,8 @@ exports.CreateOrder = (req, res) => {
     if(req.body.Client.Country != undefined){
         Order.Client.Country = req.body.Client.Country;
     }
+
+    
 
     Database.OrderModel.Order.create(Order, function (err, order) {
         if (err) {
