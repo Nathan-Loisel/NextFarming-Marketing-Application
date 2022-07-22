@@ -55,6 +55,8 @@
                     </tbody>
                 </table>
             </div>
+            <div class="ui pagination menu OrdersTablePagination">
+            </div>
         </div>
 
         
@@ -82,6 +84,8 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="ui pagination menu OrdersTablePagination">
             </div>
         </div>
 
@@ -111,6 +115,8 @@
                     </tbody>
                 </table>
             </div>
+            <div class="ui pagination menu OrdersTablePagination">
+            </div>
         </div>
     </div>  
 </div>
@@ -118,7 +124,7 @@
 
 <div class="ui modal" id="EditOrderModal">
     <i class="close icon"></i>
-    <div class="content">
+    <div class="scrolling content">
         <div class="ui top attached tabular menu">
             <a class="active item" data-tab="customer">
                 <i class="check icon"></i>
@@ -440,26 +446,6 @@
             </div>
             <div class="ui segment">
                 <div class="ui middle aligned divided list" id="ProductsList">
-                    <div class="item">
-                        <div class="right floated content">
-                            <button class="ui icon compact blue button popupButton" data-content="Add options">
-                                <i class="box icon"></i>
-                            </button>
-                            <button class="ui icon compact green button popupButton"  data-content="Add product">
-                                <i class="plus icon"></i>
-                            </button>
-                            <button class="ui icon compact button popupButton" data-content="Reset product">
-                                <i class="redo icon"></i>
-                            </button>
-                        </div>
-                        <img class="ui avatar image" src="/">
-                        <div class="content">
-                            <span style="margin-right: 10px;" class="popupButton" data-content="Description of the product">Title</span>
-                            <div class="ui label">
-                                23€
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -485,7 +471,7 @@
 
                 <div class="field">
                     <label>Product Comments</label>
-                    <textarea id="EditOrderProductsCommentsField"></textarea>
+                    <textarea id="EditOrderProductCommentsField"></textarea>
                 </div>
             </div>
 
@@ -581,32 +567,49 @@
     <div class="header">
         Order details
     </div>
-    <div class="content">
+    <div class="scrolling content">
         <div class="ui header">
             Customer
         </div>
-            <div class="ui segment">
-                <div class="ui form">
-                    <div class="three fields">
-                        <div class="field">
-                            <label>Name</label>
-                            <input readonly type="text" placeholder="Loading" id="OrderDetailsNameField">
-                        </div>
-                        <div class="field">
-                            <label>Email</label>
-                            <input readonly type="text" placeholder="Loading" id="OrderDetailsEmailField">
-                        </div>
-                        <div class="field">
-                            <label>Phone</label>
-                            <input readonly type="text" placeholder="Loading" id="OrderDetailsPhoneField">
-                        </div>
-                        <div class="field">
-                            <label>Country</label>
-                            <input readonly type="text" placeholder="Loading" id="OrderDetailsCountryField">
-                        </div>
+        <div class="ui segment">
+            <div class="ui form">
+                <div class="three fields">
+                    <div class="field">
+                        <label>Name</label>
+                        <input readonly type="text" placeholder="Loading" id="OrderDetailsNameField">
+                    </div>
+                    <div class="field">
+                        <label>Email</label>
+                        <input readonly type="text" placeholder="Loading" id="OrderDetailsEmailField">
+                    </div>
+                    <div class="field">
+                        <label>Phone</label>
+                        <input readonly type="text" placeholder="Loading" id="OrderDetailsPhoneField">
+                    </div>
+                    <div class="field">
+                        <label>Country</label>
+                        <input readonly type="text" placeholder="Loading" id="OrderDetailsCountryField">
                     </div>
                 </div>
-            </div> 
+            </div>
+        </div> 
+        <div class="ui header">
+            Order
+        </div>
+        <div class="ui segment">
+            <div class="ui form">
+                <div class="two fields">
+                    <div class="field">
+                        <label>Customer Comments</label>
+                        <textarea readonly id="OrderDetailsCustomerCommentsField"></textarea>
+                    </div>
+                    <div class="field">
+                        <label>Product Comments</label>
+                        <textarea readonly id="OrderDetailsProductCommentsField"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div> 
         <div class="ui divider"></div>
         <div class="ui header">
             Products

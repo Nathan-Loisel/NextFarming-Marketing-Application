@@ -94,10 +94,10 @@ function SetAgentPassword(Username, Password){
     );
 }
 
-function RefreshAgentsTable(){
+function RefreshAgentsTable(Page){
+    if(Page == undefined) Page = 1;
     var data = {
-        amount: 10,
-        page: 1
+        Page : Page
     }
     api.post('/agent/list', data)
     .then(res => {
@@ -106,6 +106,21 @@ function RefreshAgentsTable(){
         Agents.forEach(function(agent){
             AddInAgentsTable(agent)
         });
+        PagesAmount = res.data.pagecount;
+        $('#AgentsTablePagination').html('');
+        if(Page > 1){
+            $('#AgentsTablePagination').append('<a class="item" onclick="RefreshAgentsTable(1)">1</a>');
+            if(Page > 2){
+                $('#AgentsTablePagination').append('<a class="item" onclick="RefreshAgentsTable(' + (Page - 1) + ')">' + (Page - 1) + '</a>');
+            }
+        }
+        $('#AgentsTablePagination').append('<a class="item active">' + Page + '</a>');
+        if(Page < PagesAmount){
+            $('#AgentsTablePagination').append('<a class="item" onclick="RefreshAgentsTable(' + (Page + 1) + ')">' + (Page + 1) + '</a>');
+            if(Page < PagesAmount - 1){
+                $('#AgentsTablePagination').append('<a class="item" onclick="RefreshAgentsTable(' + PagesAmount + ')">' + PagesAmount + '</a>');
+            }
+        }
     })
     .catch(error => {
         if(error.response.data != null){

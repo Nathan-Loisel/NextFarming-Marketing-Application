@@ -22,7 +22,7 @@ const OrderSchema = new Mongoose.Schema({
     }],
     Price: Number,
     Status: Number,
-    CustomerComment: String,
+    CustomerComments: String,
     ProductComments: String,
     Dates: Object
 }, { collection: 'Orders' });

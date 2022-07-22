@@ -20,7 +20,7 @@ exports.CreateOrder = (req, res) => {
         Price: req.body.Price,
         Status: 0,
         CustomerComments: null,
-        AgentComments: null,
+        ProductComments: null,
         Dates: {
             0: Date.now(),
             1: null,
@@ -55,6 +55,14 @@ exports.CreateOrder = (req, res) => {
 
     if(req.body.Client.Country != undefined){
         Order.Client.Country = req.body.Client.Country;
+    }
+
+    if(req.body.CustomerComments != undefined){
+        Order.CustomerComments = req.body.CustomerComments;
+    }
+
+    if(req.body.ProductComments != undefined){
+        Order.ProductComments = req.body.ProductComments;
     }
 
     
@@ -164,6 +172,14 @@ exports.UpdateOrder = (req, res) => {
                     order.Dates[3] = Date.now();
                 }
             }
+        }
+
+        if(req.body.CustomerComments != undefined){
+            order.CustomerComments = req.body.CustomerComments;
+        }
+
+        if(req.body.ProductComments != undefined){
+            order.ProductComments = req.body.ProductComments;
         }
 
         order.save(function (err, order) {
@@ -281,6 +297,7 @@ exports.ConfirmOrder = (req, res) => {
 }
 
 exports.ListOrders = (req, res) => {
+    var Page = req.body.Page;
     var Status = req.body.Status;
     
     Database.OrderModel.Order.find({ Status: Status }, function (err, orders) {
@@ -293,10 +310,14 @@ exports.ListOrders = (req, res) => {
             return;
         }
 
+        var PageCount = Math.ceil(orders.length / 10);
+        orders = orders.slice((Page - 1) * 10, Page * 10);
+
         res.status(200);
         res.send({
             success: true,
-            message: orders
+            message: orders,
+            pagecount: PageCount
         });
     }
     ).sort({ ID: -1 });

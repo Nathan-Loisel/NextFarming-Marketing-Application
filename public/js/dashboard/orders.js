@@ -4,6 +4,7 @@ var EditOrderCurrentProducts = [];
 var EditOrderSelectedOptions = [];
 var EditOrderCurrentProductID = null;
 var CurrentOrder = null;
+var CurrentStatus = null;
 var ActualOrdersTab = 1;
 var CurrentOrderID = null;
 
@@ -129,6 +130,11 @@ function EditOrderRefreshProductsTable(){
 }
 
 function EditOrderAddProductInList(Product){
+    var ImageContent = '';
+    if(Product.Images != undefined  && Product.Images.length > 0){
+        ImageContent = '<img style="max-width: 30px; max-height: 30px" src="' + url + '/media/' + Product.Images[0] + '" class="ui avatar image">';
+    }
+
     var OptionsCountHTML = '';
     if(Product.SelectedOptions != undefined && Product.SelectedOptions.length > 0){
         OptionsCountHTML = '<div class="ui label">' + Product.SelectedOptions.length + '</div>';
@@ -151,7 +157,7 @@ function EditOrderAddProductInList(Product){
                     <i class="redo icon"></i>
                 </button>
             </div>
-            <img class="ui avatar image" src="/">
+            ${ImageContent}
             <div class="content">
                 <span style="margin-right: 10px;" class="popupButton" data-content="${Product.ShortDescription}d">${Product.Title}</span>
                 <div class="ui label">
@@ -164,6 +170,11 @@ function EditOrderAddProductInList(Product){
 }
 
 function EditOrderAddProductInSelectedList(Product){
+
+    var ImageContent = '';
+    if(Product.Product.Images != undefined  && Product.Product.Images.length > 0){
+        ImageContent = '<img style="max-width: 30px; max-height: 30px" src="' + url + '/media/' + Product.Product.Images[0] + '" class="ui avatar image">';
+    }
 
     var OptionsCountHTML = '';
     if(Product.SelectedOptions != undefined && Product.SelectedOptions.length > 0){
@@ -206,7 +217,7 @@ function EditOrderAddProductInSelectedList(Product){
                     <i class="minus icon"></i>
                 </button>
             </div>
-            <img class="ui avatar image" src="/">
+            ${ImageContent}
             <div class="content">
                 <span style="margin-right: 10px;" class="popupButton" data-content="${Product.Product.ShortDescription}d">${Product.Product.Title}</span>
                 <div class="ui label">
@@ -239,9 +250,14 @@ function EditOrderSelectedProductCheckOptionsButton(ProductID, Options){
 
 
     Options.forEach(function(Option) {
+        var ImageContent = '';
+        if(Option.Images != undefined  && Option.Images.length > 0){
+            ImageContent = '<img style="max-width: 30px; max-height: 30px" src="' + url + '/media/' + Option.Images[0] + '" class="ui avatar image">';
+        }
+
         $('#EditOrderSelectedProductCheckOptionsList').append(
             `<div class="item">
-                <img class="ui avatar image" src="/images/avatar2/small/lena.png">
+                ${ImageContent}
                 <div class="content">
                     <span style="margin-right: 10px;" class="popupButton" data-content="${Option.Description}">${Option.Title}</span>
                     <div class="ui label">
@@ -309,6 +325,10 @@ function EditOrderOptionsModalButton(ProductID){
             checked = "checked";
         }
 
+        var ImageContent = '';
+        if(Option.Images != undefined && Option.Images.length > 0){
+            ImageContent = '<img style="max-width: 30px; max-height: 30px" src="' + url + '/media/' + Option.Images[0] + '" class="ui avatar image">';
+        }
 
 
         $('#EditOrderAddOptionsList').append(
@@ -319,7 +339,7 @@ function EditOrderOptionsModalButton(ProductID){
                         <label></label>
                     </div>
                 </div>
-                <img class="ui avatar image" src="/images/avatar2/small/lena.png">
+                ${ImageContent}
                 <div class="content">
                     <span style="margin-right: 10px;" class="popupButton" data-content="${Option.Description}">${Option.Title}</span>
                     <div class="ui label">
@@ -437,7 +457,9 @@ function EditOrder(){
     var Data = {
         Client: Client,
         Products: SelectedProducts,
-        Price: TotalPrice
+        Price: TotalPrice,
+        CustomerComments: $('#EditOrderCustomerCommentsField').val(),
+        ProductComments: $('#EditOrderProductCommentsField').val()
     }
 
 
@@ -480,7 +502,11 @@ function EditOrder(){
 
 }
 
-function LoadOrders(Status){
+function LoadOrders(Status, Page){
+    if(Page == undefined){
+        Page = 1;
+    }
+    CurrentStatus = Status;
     // PENDING: 0,
     // CONFIRMED: 1,
     // ARCHIVED: 2,
@@ -490,7 +516,7 @@ function LoadOrders(Status){
         ShowNotif("Status not defined", 'red');
     }
 
-    axios.post('/order/list', {Status: Status})
+    axios.post('/order/list', {Status: Status, Page: Page})
     .then(function (response) {
         Orders = response.data.message;
 
@@ -503,6 +529,22 @@ function LoadOrders(Status){
         }
         else if(Status == 2){
             RefreshArchivedOrdersTable(Orders);
+        }
+
+        var PagesAmount = response.data.pagecount;
+        $('.OrdersTablePagination').html('');
+        if(Page > 1){
+            $('.OrdersTablePagination').append('<a class="item" onclick="LoadOrders(' + CurrentStatus + ', 1)">1</a>');
+            if(Page > 2){
+                $('.OrdersTablePagination').append('<a class="item" onclick="LoadOrders(' + CurrentStatus + ', ' + (Page - 1) + ')">' + (Page - 1) + '</a>');
+            }
+        }
+        $('.OrdersTablePagination').append('<a class="item active">' + Page + '</a>');
+        if(Page < PagesAmount){
+            $('.OrdersTablePagination').append('<a class="item" onclick="LoadOrders(' + CurrentStatus + ', ' + (Page + 1) + ')">' + (Page + 1) + '</a>');
+            if(Page < PagesAmount - 1){
+                $('.OrdersTablePagination').append('<a class="item" onclick="LoadOrders(' + CurrentStatus + ', ' + PagesAmount + ')">' + PagesAmount + '</a>');
+            }
         }
     }
     )
@@ -624,6 +666,9 @@ function ShowOrderEditModal(OrderID){
         $('#EditOrderPostCodeField').val(CurrentOrder.Client.PostCode);
         $('#EditOrderCityField').val(CurrentOrder.Client.City);
         $('#EditOrderCountryField').val(CurrentOrder.Client.Country);
+        $('#EditOrderCustomerCommentsField').val(CurrentOrder.CustomerComments);
+        console.log(CurrentOrder);
+        $('#EditOrderProductCommentsField').val(CurrentOrder.ProductComments);
 
         EditOrderSelectedProducts = CurrentOrder.Products;
         EditOrderRefreshProductsTable();
@@ -651,8 +696,6 @@ function ShowOrderChangeStatusModal(OrderID){
 function ShowOrderDetailsModal(OrderID){
     $('#OrderDetailsModal').modal('show');
     CurrentOrderID = OrderID;
-
-    // axios get /order/get
 
     axios.post('/order/get', {OrderID: OrderID})
     .then(function (response) {
@@ -703,7 +746,6 @@ function ShowOrderDetailsModal(OrderID){
     }
     )
     .catch(function (error) {
-        console.log(error);
         if(error.response != null && error.response.data != null){
             if(error.response.data.message == undefined){
                 ShowNotif("Server Error", 'red');
@@ -730,7 +772,6 @@ function ChangeOrderStatus(){
     .then(function (response) {
         ShowNotif("Order status successfully changed", 'green');
         $('#ChangeOrderStatusModal').modal('hide');
-        console.log(ActualOrdersTab);
         LoadOrders(ActualOrdersTab);
     }
     )
@@ -756,4 +797,6 @@ function ResetEditOrderModal(){
     $('#EditOrderPostCodeField').val("");
     $('#EditOrderCityField').val("");
     $('#EditOrderCountryField').val("");
+    $('#EditOrderCustomerCommentsField').val("");
+    $('#EditOrderProductCommentsField').val("");
 }

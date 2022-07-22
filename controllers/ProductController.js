@@ -1,6 +1,7 @@
 const uuid = require('uuid');
 var Database = require('../Database');
 const fs = require('fs');
+const { count } = require('console');
 
 exports.CreateProduct = (req, res) => {
 
@@ -398,6 +399,8 @@ exports.GetProduct = (req, res) => {
 }
 
 exports.ListProducts = (req, res) => {
+    var Page = req.body.Page;
+
     Database.ProductModel.Product.find({}, function (err, products) {
         if (err) {
             res.status(400);
@@ -407,22 +410,23 @@ exports.ListProducts = (req, res) => {
             });
             return;
         }
-        else {
-            res.status(200);
-            res.send({
-                success: true,
-                message: products
-            });
-            return;
-        }
+        var PageCount = Math.ceil(products.length / 10);
+        var products = products.slice((Page - 1) * 10, Page * 10);
+        res.status(200);
+        res.send({
+            success: true,
+            message: products,
+            pagecount: PageCount
+        });
     }
     );
 }
 
 exports.GetOption = (req, res) => {
+    var ProductID = req.body.ProductID;
     var OptionID = req.body.OptionID;
 
-    Database.ProductModel.Option.findOne({ ID: OptionID }, function (err, option) {
+    Database.ProductModel.Product.findOne({ ID: ProductID }, function (err, product) {
         if (err) {
             res.status(400);
             res.send({
@@ -432,21 +436,32 @@ exports.GetOption = (req, res) => {
             return;
         }
         else {
-            if (option == null) {
+            if (product == null) {
                 res.status(400);
                 res.send({
                     success: false,
-                    message: "Can't find option"
+                    message: "Can't find product"
                 });
                 return;
             }
             else {
-                res.status(200);
-                res.send({
-                    success: true,
-                    message: option
-                });
-                return;
+                var option = product.Options.find(x => x.ID == OptionID);
+                if(option == undefined) {
+                    res.status(400);
+                    res.send({
+                        success: false,
+                        message: "Can't find option"
+                    });
+                    return;
+                }
+                else {
+                    res.status(200);
+                    res.send({
+                        success: true,
+                        message: option
+                    });
+                    return;
+                }
             }
         }
     }
@@ -881,7 +896,7 @@ exports.ChangeOptionMainImage = (req, res) => {
                 return;
             }
             else {
-                if (product.Options.indexOf(OptionID) == -1) {
+                if (product.Options.find(x => x.ID == OptionID) == null) {
                     res.status(400);
                     res.send({
                         success: false,
@@ -949,7 +964,7 @@ exports.DeleteOptionImage = (req, res) => {
                 return;
             }
             else {
-                if (product.Options.indexOf(OptionID) == -1) {
+                if (product.Options.find(x => x.ID == OptionID) == null) {
                     res.status(400);
                     res.send({
                         success: false,
@@ -1029,7 +1044,7 @@ exports.PushOptionImage = (req, res) => {
                 return;
             }
             else {
-                if (product.Options.indexOf(OptionID) == -1) {
+                if (product.Options.find(x => x.ID == OptionID) == null) {
                     res.status(400);
                     res.send({
                         success: false,
@@ -1049,7 +1064,7 @@ exports.PushOptionImage = (req, res) => {
                     }
                     else {
                         var index = option.Images.indexOf(Image);
-                        option.Images.splice(index + 1, 0, Image);
+                        option.Images.splice(index, 0, option.Images.splice(index + 1, 1)[0]);
                     }
                     Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
                         if (err) {
@@ -1098,7 +1113,7 @@ exports.PullOptionImage = (req, res) => {
                 return;
             }
             else {
-                if (product.Options.indexOf(OptionID) == -1) {
+                if (product.Options.find(x => x.ID == OptionID) == null) {
                     res.status(400);
                     res.send({
                         success: false,
@@ -1117,7 +1132,8 @@ exports.PullOptionImage = (req, res) => {
                         return;
                     }
                     else {
-                        option.Images.splice(option.Images.indexOf(Image), 1);
+                        var index = option.Images.indexOf(Image);
+                        option.Images.splice(index, 0, option.Images.splice(index - 1, 1)[0]);
                     }
                     Database.ProductModel.Product.updateOne({ ID: ProductID }, product, function (err, product) {
                         if (err) {

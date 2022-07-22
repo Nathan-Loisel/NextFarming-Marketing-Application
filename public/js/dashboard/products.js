@@ -1,6 +1,7 @@
 var CurrentProductID = null;
 var CurrentOptionID = null;
 var CurrentOptions = null;
+var CurrentPage = 1;
 
 $(document).ready(function() {
     RefreshProductsTable();
@@ -158,21 +159,37 @@ function AddProduct(Product) {
     );
 }
 
-function RefreshProductsTable() {
+function RefreshProductsTable(Page) {
+    if(Page == undefined) { Page = 1 };
     var data = {
-        Amount: 10,
-        Page: 1
+        Page: Page
     }
     api.post('/product/list', data)
     .then(res => {
+        CurrentPage = Page;
+        var PagesAmount = res.data.pagecount;
         $('#ProductsTable').html('');
         res.data.message.forEach(function(Product) {
             AddProductToTable(Product);
         });
+
+        $('#ProductsTablePagination').html('');
+        if(Page > 1){
+            $('#ProductsTablePagination').append('<a class="item" onclick="RefreshProductsTable(1)">1</a>');
+            if(Page > 2){
+                $('#ProductsTablePagination').append('<a class="item" onclick="RefreshProductsTable(' + (Page - 1) + ')">' + (Page - 1) + '</a>');
+            }
+        }
+        $('#ProductsTablePagination').append('<a class="item active">' + Page + '</a>');
+        if(Page < PagesAmount){
+            $('#ProductsTablePagination').append('<a class="item" onclick="RefreshProductsTable(' + (Page + 1) + ')">' + (Page + 1) + '</a>');
+            if(Page < PagesAmount - 1){
+                $('#ProductsTablePagination').append('<a class="item" onclick="RefreshProductsTable(' + PagesAmount + ')">' + PagesAmount + '</a>');
+            }
+        }
     }
     )
-    .catch(error => {    
-        console.log(error);
+    .catch(error => {   
         if(error.response != null && error.response.data != null){
             if(error.response.data.message == undefined){
                 ShowNotif("Server Error", 'red');
@@ -192,13 +209,12 @@ function AddProductToTable(Product) {
     if(Product.Images != undefined  && Product.Images.length > 0){
         ImageContent = '<img style="max-width: 60px; max-height: 60px" src="' + url + '/media/' + Product.Images[0] + '" class="img-fluid">';
     }
-    console.log(ImageContent);
 
     $('#ProductsTable').append(
         '<tr>' +
+        '<td class="collapsing">' + ImageContent + '</td>' +
         '<td>' + Product.Title + '</td>' +
         '<td>' + Product.ShortDescription + '</td>' +
-        '<td>' + ImageContent + '</td>' +
         '<td>' + Product.Price + '</td>' +
         '<td class="collapsing" style="padding: 5px;">' +
         '<button style="padding: 7px; font-size: 14px;" class="ui mini green button" onclick="OpenManageProductSidebar(\'' + Product.ID + '\')" >Manage</button>' +
@@ -277,7 +293,6 @@ function LoadProduct(ID){
     }
     )
     .catch(error => {
-        console.log(error);
         if(error.response != null && error.response.data != null){
             if(error.response.data.message == undefined){
                 ShowNotif("Server Error", 'red');
@@ -302,8 +317,20 @@ function RefreshOptionsTable(Options) {
 }
 
 function AddOptionToTable(Option) {
+    var ImageContent = 'No image uploaded';
+    if(Option.Images != undefined  && Option.Images.length > 0){
+        ImageContent = '<img style="max-width: 60px; max-height: 60px" src="' + url + '/media/' + Option.Images[0] + '" class="img-fluid">';
+    }
+
+    var DescriptionContent = 'No description provided';
+    if(Option.Description != undefined && Option.Description != null){
+        DescriptionContent = Option.Description;
+    }
+
+
     $('#OptionsTable').append(
         '<tr>' +
+        '<td class="collapsing">' + ImageContent + '</td>' +
         '<td>' + Option.Title + '</td>' +
         '<td>' + Option.Description + '</td>' +
         '<td>' + Option.Price + '</td>' +
@@ -424,68 +451,85 @@ function AddOption(ProductID, Option){
 }
 
 function OpenEditOptionModal(OptionID) {
-    CurrentOptionID = OptionID;
-    Option = CurrentOptions.find(function(Option) {
-        return Option.ID == OptionID;
-    }
-    );
-    $('#EditOptionTitleField').val(Option.Title);
-    $('#EditOptionDescriptionField').val(Option.Description);
-    $('#EditOptionPriceField').val(Option.Price);
-    
-    if(Option.Images == undefined){
-        Option.Images = [];
-    }
-    var Images = Option.Images;
-    if(Images.length > 0){
-        var ImagesContent = '<div class="ui small images">';
-        Images.forEach(function(Image, index) {
-            ImagesContent += `
-            <div class="ui fluid image">
-                <div class="ui dimmer">
-                    <div class="content">
-                        <button onclick="PullProductImage('` + Image + `')" class="ui icon mini blue button" style="padding: 7px; font-size: 14px;">
-                            <i class="angle double left icon"></i>
-                        </button>
-                        <button onclick="PushProductImage('` + Image + `')" class="ui icon mini blue button" style="padding: 7px; font-size: 14px;">
-                            <i class="angle double right icon"></i>
-                        </button>
-                        <br/>
-                        <br/>
-                        <button onclick="DeleteProductImage('` + Image + `')" class="ui icon mini red button" style="padding: 7px; font-size: 14px;">
-                            <i class="trash icon"></i>
-                        </button>
-                        <button onclick="MainProductImage('` + Image + `')" class="ui icon mini green button" style="padding: 7px; font-size: 14px;">
-                            <i class="star icon"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            if(index == 0){
-                ImagesContent += `
-                <a class="ui left green corner label">
-                  <i class="star icon"></i>
-                </a>`
-
-            }
-            ImagesContent += `
-            <img class="ui image" src="` + url + '/media/' + Image + `">
-            </div>`;
-        }
-        );
-        ImagesContent += '</div>';
-        $('#EditOptionImages').html(ImagesContent);
-    }
-    else{
-        $('#EditOptionImages').html('No images uploaded');
-    }
-    $('.image')
-    .dimmer({
-        on: 'hover'
-    })
-    ;
+    RefreshEditOption(OptionID);
 
     $('#EditOptionModal').modal('show');
+}
+
+function RefreshEditOption(OptionID){
+    api.post('/product/options/get', {OptionID: OptionID, ProductID: CurrentProductID})
+    .then(res => {
+        CurrentOptionID = OptionID;
+        Option = res.data.message;
+        $('#EditOptionTitleField').val(Option.Title);
+        $('#EditOptionDescriptionField').val(Option.Description);
+        $('#EditOptionPriceField').val(Option.Price);
+        
+        if(Option.Images == undefined){
+            Option.Images = [];
+        }
+        var Images = Option.Images;
+        if(Images.length > 0){
+            var ImagesContent = '<div class="ui small images">';
+            Images.forEach(function(Image, index) {
+                ImagesContent += `
+                <div class="ui fluid image">
+                    <div class="ui dimmer">
+                        <div class="content">
+                            <button onclick="PullOptionImage('` + Image + `')" class="ui icon mini blue button" style="padding: 7px; font-size: 14px;">
+                                <i class="angle double left icon"></i>
+                            </button>
+                            <button onclick="PushOptionImage('` + Image + `')" class="ui icon mini blue button" style="padding: 7px; font-size: 14px;">
+                                <i class="angle double right icon"></i>
+                            </button>
+                            <br/>
+                            <br/>
+                            <button onclick="DeleteOptionImage('` + Image + `')" class="ui icon mini red button" style="padding: 7px; font-size: 14px;">
+                                <i class="trash icon"></i>
+                            </button>
+                            <button onclick="MainOptionImage('` + Image + `')" class="ui icon mini green button" style="padding: 7px; font-size: 14px;">
+                                <i class="star icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                if(index == 0){
+                    ImagesContent += `
+                    <a class="ui left green corner label">
+                      <i class="star icon"></i>
+                    </a>`
+    
+                }
+                ImagesContent += `
+                <img class="ui image" src="` + url + '/media/' + Image + `">
+                </div>`;
+            }
+            );
+            ImagesContent += '</div>';
+            $('#EditOptionImages').html(ImagesContent);
+        }
+        else{
+            $('#EditOptionImages').html('No images uploaded');
+        }
+        $('.image')
+        .dimmer({
+            on: 'hover'
+        })
+        ;
+    }
+    )
+    .catch(error => {
+        if(error.response.data != null){
+            if(error.response.data.message == undefined){
+                ShowNotif("Server Error", 'red');
+            }
+            ShowNotif(error.response.data.message, 'red');
+        }
+        else{
+            ShowNotif("Server Error", 'red');
+        }
+    }
+    );
 }
 
 function OpenDeleteOptionModal(ID) {
@@ -593,7 +637,7 @@ function UploadOptionImages(){
     .then(res => {
         ShowNotif("Images successfully uploaded", 'green');
         $('#AddOptionImageModal').modal('hide');
-        LoadOption(OptionID);
+        RefreshEditOption(CurrentOptionID);
     }
     )
     .catch(error => {
@@ -626,7 +670,6 @@ function PullProductImage(Image){
     )
     .catch(error => {
         HandleError(error);
-        console.log(error);
     }
     );
 }
@@ -651,6 +694,62 @@ function MainProductImage(Image){
     .then(res => {
         ShowNotif("Image successfully set as main", 'green');
         LoadProduct(ProductID);
+    }
+    )
+    .catch(error => {
+        HandleError(error);
+    }
+    );
+}
+
+function PushOptionImage(Image){
+    OptionID = CurrentOptionID;
+    api.post('/product/options/images/push', {OptionID: OptionID, Image: Image, ProductID: CurrentProductID})
+    .then(res => {
+        ShowNotif("Image successfully pushed", 'green');
+        RefreshEditOption(CurrentOptionID);
+    }
+    )
+    .catch(error => {
+        HandleError(error);
+    }
+    );
+}
+
+function PullOptionImage(Image){
+    OptionID = CurrentOptionID;
+    api.post('/product/options/images/pull', {OptionID: OptionID, Image: Image, ProductID: CurrentProductID})
+    .then(res => {
+        ShowNotif("Image successfully pulled", 'green');
+        RefreshEditOption(CurrentOptionID);
+    }
+    )
+    .catch(error => {
+        HandleError(error);
+    }
+    );
+}
+
+function DeleteOptionImage(Image){
+    OptionID = CurrentOptionID;
+    api.post('/product/options/images/delete', {OptionID: OptionID, Image: Image, ProductID: CurrentProductID})
+    .then(res => {
+        ShowNotif("Image successfully deleted", 'green');
+        RefreshEditOption(CurrentOptionID);
+    }
+    )
+    .catch(error => {
+        HandleError(error);
+    }
+    );
+}
+
+function MainOptionImage(Image){
+    OptionID = CurrentOptionID;
+    api.post('/product/options/images/main', {OptionID: OptionID, Image: Image, ProductID: CurrentProductID})
+    .then(res => {
+        ShowNotif("Image successfully set as main", 'green');
+        RefreshEditOption(CurrentOptionID);
     }
     )
     .catch(error => {

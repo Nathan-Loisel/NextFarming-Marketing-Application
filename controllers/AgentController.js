@@ -213,6 +213,7 @@ exports.GetAgent = function(req, res) {
 }
 
 exports.ListAgents = function(req, res) {
+    var Page = req.body.Page;
     var Criterias = {};
     
     if(req.body.Criterias != undefined){
@@ -248,24 +249,13 @@ exports.ListAgents = function(req, res) {
                 return;
             }
             else{
-                var ReturnedAgents = [];
-                for(var i = (req.body.Page - 1) * req.body.Amount; i < (req.body.Page + 1) * req.body.Amount; i++){
-                    if(i >= agents.length){
-                        break;
-                    }
-                    ReturnedAgents.push({
-                        FirstName: agents[i].FirstName,
-                        LastName: agents[i].LastName,
-                        Username: agents[i].Username,
-                        Role: agents[i].Role,
-                        Created: agents[i].Created,
-                        Enabled: agents[i].Enabled
-                    });
-                }
+                var PageCount = Math.ceil(agents.length / 10);
+                agents = agents.slice((Page - 1) * 10, Page * 10);
                 res.status(200);
                 res.send({
                     success: true,
-                    data: ReturnedAgents
+                    data: agents,
+                    pagecount: PageCount
                 });
                 return;
             }
@@ -280,28 +270,17 @@ exports.ListAgents = function(req, res) {
                 });
                 return;
             }
-            else{
-                res.status(200);
-                var ReturnedAgents = [];
-                for(var i = req.body.Page * req.body.Amount; i < (req.body.Page + 1) * req.body.Amount; i++){
-                    if(i >= agents.length){
-                        break;
-                    }
-                    ReturnedAgents.push({
-                        FirstName: agents[i].FirstName,
-                        LastName: agents[i].LastName,
-                        Username: agents[i].Username,
-                        Role: agents[i].Role,
-                        Created: agents[i].Created,
-                        Enabled: agents[i].Enabled
-                    });
-                }
-                res.send({
-                    success: true,
-                    data: ReturnedAgents
-                });
-                return;
-            }
+            var PageCount = Math.ceil(agents.length / 10);
+            agents = agents.slice((Page - 1) * req.body.Amount, Page * req.body.Amount);
+
+
+            res.status(200);
+            res.send({
+                success: true,
+                data: agents,
+                pagecount: PageCount
+            });
+            return;
         });
     }
 }

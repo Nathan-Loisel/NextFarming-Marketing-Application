@@ -230,6 +230,10 @@ router.post('/list', (req, res) => {
         return;
     }
 
+    if(req.body.Page == undefined) {
+        req.body.Page = 1;
+    }
+
     OrderController.ListOrders(req, res);
 });
 
